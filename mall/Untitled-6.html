@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh"><head>
+    <meta charset="utf-8">
+    <link rel="dns-prefetch" href="//static.weiba.com">
+    <meta name="apple-mobile-web-app-title" content="直销">
+    <link rel="apple-touch-icon-precomposed" href="http://static.weiba.com/img/apple-touch-icon.png">
+    <link rel="apple-touch-icon" href="http://static.weiba.com/img/apple-touch-icon.png">
+    <title>weixin://private/setresult/SCENE_FETCHQUEUE&amp;eyJmdW5jIjoibG9nIiwicGFyYW1zIjp7Im1zZyI6Il9ydW5PbjNyZEFwaUxpc3QgOiBtZW51OnNoYXJlOnRpbWVsaW5lLG1lbnU6c2hhcmU6YXBwbWVzc2FnZSxvblZvaWNlUmVjb3JkRW5kLG9uVm9pY2VQbGF5QmVnaW4sb25Wb2ljZVBsYXlFbmQsb25Mb2NhbEltYWdlVXBsb2FkUHJvZ3Jlc3Msb25JbWFnZURvd25sb2FkUHJvZ3Jlc3Msb25Wb2ljZVVwbG9hZFByb2dyZXNzLG9uVm9pY2VEb3dubG9hZFByb2dyZXNzLG1lbnU6c2V0Zm9udCxtZW51OnNoYXJlOndlaWJvLG1lbnU6c2hhcmU6ZW1haWwsd3hkb3dubG9hZDpzdGF0ZV9jaGFuZ2UsaGRPbkRldmljZVN0YXRlQ2hhbmdlZCxhY3Rpdml0eTpzdGF0ZV9jaGFuZ2UifSwiX19tc2dfdHlwZSI6ImNhbGwiLCJfX2NhbGxiYWNrX2lkIjoiMTAwMSJ9</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- ▼ CSS -->
+    <link rel="stylesheet" type="text/css" href="http://zaagsszj.shop.bama555.com/assets/css/wap/outlet/base.css">
+    <link rel="stylesheet" type="text/css" href="http://zaagsszj.shop.bama555.com/assets/css/wap/outlet/newoutlet.css">
+    <link rel="stylesheet" type="text/css" href="http://zaagsszj.shop.bama555.com/assets/css/iconfont/iconfont.css?t=20150423">
+    <!-- ▲ CSS -->
+
+<script type="text/javascript" charset="utf-8" async data-requirecontext="_" data-requiremodule="apps/newoutlet/router" src="http://zaagsszj.shop.bama555.com/static/js/apps/newoutlet/router.js?rand=201505071564"></script></head>
+<body wmall-title="晋恩运营ZaaG首饰专家" wmall-icon="http://3.s.bama555.com/3/wbmall/shop/1506/24/558a4c5cb10ef.jpg" wmall-link="http://ZaaGsszj.shop.bama555.com/" wmall-desc="晋恩运营ZaaG首饰专家">
+<div id="views"><div id="view-apply" class="page-view view-apply"><div id="header">  <img class="banner" src="http://3.s.bama555.com/3/wbmall/shop/1506/26/558cf48231abf.jpg"> </div><div id="content"><div><p class="notice" style="padding-bottom:0;">欢迎加入<span class="orange">晋恩运营ZaaG首饰专家</span>，请填写申请信息！</p><p class="notice" style="padding: 0 10px;">邀请人： <span class="orange">  张利泉</span> (请核对) </p><div class="from-control"> <div class="input-group"> <input class="text input" name="name" placeholder="请填写真实姓名，用于佣金结算"> </div> <div class="input-group"> <input class="text input" name="mobile" placeholder="请填写手机号码方便联系"> </div>  </div><a href="javascript:;" class="js-apply-btn btn btn-warning btn-big" style="margin:0 10px 25px;">申请成为分销商</a><div class="row"> <div class="hd">分销商特权</div> <div class="bd"> <div class="item"> <i class="iconfont" style="color:#33cd32;"></i> <div class="info"> <p class="f14 mb5">独立微店</p> <p class="f12 gray">拥有自己的微店及推广二维码；</p> </div> </div> <!--<div class="item"> <i class="iconfont" style="color:#f60;">&#xe605</i> <div class="info"> <p class="f14 mb5">采购返现</p> <p class="f12 gray">自己采购，您可获得厂家返现优惠；</p> </div> </div>--> <div class="item"> <i class="iconfont" style="color:#fece00;"></i> <div class="info"> <p class="f14 mb5">销售拿佣金</p> <p class="f12 gray">微店卖出商品，您可以获得佣金；</p> </div> </div> <div class="item"> <p class="f12 tint-gray" style="line-height:18px;">分销商的商品销售统一由厂家直接收款、直接发货，并提供产品的售后服务，分销佣金由厂家统一设置。</p> </div> </div></div></div></div></div></div>
+
+
+</body><iframe id="__WeixinJSBridgeIframe_SetResult" style="display: none;"></iframe><iframe id="__WeixinJSBridgeIframe" style="display: none;"></iframe></html>
