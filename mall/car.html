@@ -39,45 +39,26 @@
       </tr>
      </table>
      
+     <span>
+     	<a href="javascript:;"><input type="checkbox" name="1" /> 全选</a>
+     	<a href="javascript:;">删除</a>
+     </span>
+
      <div class="dingdanlist">
-      <table>
-       <tr>
-        <td width="100%" colspan="4"><a href="javascript:;"><input type="checkbox" name="1" /> 全选</a></td>
-       </tr>
-       <tr>
-        <td width="4%"><input type="checkbox" name="1" /></td>
-        <td class="dingimg" width="15%"><img src="images/pro1.jpg" /></td>
-        <td width="50%">
-         <h3>三级分销农庄有机瓢瓜400g</h3>
-         <time>下单时间：2015-08-11  13:51</time>
-        </td>
-        <td align="right"><input type="text" class="spinnerExample" /></td>
-       </tr>
-       <tr>
-        <th colspan="4"><strong class="orange">¥36.60</strong></th>
-       </tr>
-      </table>
+		<table id="cartsTable">
+			<tr>
+				<td width="4%"><input type="checkbox" name="1" /></td>
+				<td class="dingimg" width="15%"><img src="images/pro1.jpg" /></td>
+				<td width="50%">
+					<h3>三级分销农庄有机瓢瓜400g</h3>
+					<time>下单时间：2015-08-11  13:51</time>
+				</td>
+				<td align="right"><input type="text" class="spinnerExample" /></td>
+				<td colspan="4"><strong class="orange">¥36.60</strong></td>
+			</tr>
+		</table>
      </div><!--dingdanlist/-->
      
-     <div class="dingdanlist">
-      <table>
-       <tr>
-        <td width="4%"><input type="checkbox" name="1" /></td>
-        <td class="dingimg" width="15%"><img src="images/pro1.jpg" /></td>
-        <td width="50%">
-         <h3>三级分销农庄有机瓢瓜400g</h3>
-         <time>下单时间：2015-08-11  13:51</time>
-        </td>
-        <td align="right"><input type="text" class="spinnerExample" /></td>
-       </tr>
-       <tr>
-        <th colspan="4"><strong class="orange">¥36.60</strong></th>
-       </tr>
-       <tr>
-        <td width="100%" colspan="4"><a href="javascript:;"><input type="checkbox" name="1" /> 删除</a></td>
-       </tr>
-      </table>
-     </div><!--dingdanlist/-->
      <div class="height1"></div>
      <div class="gwcpiao">
      <table>
@@ -96,7 +77,12 @@
     <script src="js/style.js"></script>
     <!--jq加减-->
     <script src="js/jquery.spinner.js"></script>
-   <script>
+	
+    <script src="js/web/net.js"></script>
+    <script src="js/web/global.js"></script>
+    <script src="js/web/cart.js"></script>
+    
+    <script>
 	$('.spinnerExample').spinner({});
 	</script>
   </body>
