@@ -93,6 +93,9 @@
     <script src="js/style.js"></script>
     <!--焦点轮换-->
     <script src="js/jquery.excoloSlider.js"></script>
+	
+    <script src="js/web/utils.js"></script>
+	
     <script>
 		$(function () {
 		 $("#sliderA").excoloSlider();
@@ -100,8 +103,13 @@
 	</script>
      <!--jq加减-->
     <script src="js/jquery.spinner.js"></script>
-   <script>
-	$('.spinnerExample').spinner({});
+    <script>
+		$('.spinnerExample').spinner({});
+		
+		var uid=localStorage.uid;
+		let obj=utils.parseUrlSearch();
+		console.log("href="+window.location.href+",search="+window.location.search
+			+",uid="+uid+",pid="+obj.pid);
 	</script>
   </body>
 </html>

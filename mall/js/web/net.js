@@ -1,13 +1,13 @@
 /**
  * 
  */
-class Network{
+class net{
 	
 	constructor(){
 		
 	}
 	
-	request(url,callback,params,get=true){
+	static request(url,callback,params,get=true){
 	    var httpRequest=new XMLHttpRequest();
 	    httpRequest.open(get?"GET":"POST",url,true);
 	    httpRequest.onreadystatechange=function(){
@@ -30,7 +30,7 @@ class Network{
 	}
 }
 
-class ColoredPoint extends Network{
+class ColoredPoint extends net{
     constructor(x, y, color){
         super();
     }

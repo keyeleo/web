@@ -2,23 +2,19 @@
  * 
  */
 
-console.log("cart.js network="+_G.network+",api_url="+_G.api_url+",uid="+_G.uid);
+console.log("cart.js ,api_url="+_G.api_url+",uid="+_G.uid);
 
 var params=new FormData();
 params.append("uid",_G.uid);
 
 let url=_G.api_url+"cart/load";
-_G.network.request(url,function(obj){
-    console.log("obj="+obj+",len="+obj.length);
-    
+net.request(url,function(obj){    
 	var bookTb = document.getElementById("cartsTable");
-    console.log("bookTb="+bookTb);
 	if(bookTb!=null){
 		// 删除bookTb原有的所有行
 		while(bookTb.rows.length > 0){
 			bookTb.deleteRow(bookTb.rows.length - 1);
 		}
-	    console.log("bookTb removed");
 		
 		for (var i = 0 , len = obj.length ; i < len ; i++){
 			var product=obj[i];

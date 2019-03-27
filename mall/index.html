@@ -63,7 +63,7 @@
      <div class="index-pro1">
       <div class="index-pro1-list">
        <dl>
-        <dt><a href="proinfo.html"><img src="images/pro1.jpg" /></a></dt>
+        <dt><a href="proinfo.html?pid=wine"><img src="images/pro1.jpg" /></a></dt>
         <dd class="ip-text"><a href="proinfo.html">这是产品的名称</a><span>已售：488</span></dd>
         <dd class="ip-price"><strong>¥299</strong> <span>¥599</span></dd>
        </dl>
@@ -185,12 +185,17 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/style.js"></script>
+    
+    <script src="js/web/net.js"></script>
+    <script src="js/web/global.js"></script>
+    
     <!--焦点轮换-->
     <script src="js/jquery.excoloSlider.js"></script>
     <script>
 		$(function () {
 		 $("#sliderA").excoloSlider();
 		});
+		localStorage.uid=10010;
 	</script>
   </body>
 </html>
