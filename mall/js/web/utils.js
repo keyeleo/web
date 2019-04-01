@@ -16,4 +16,8 @@ class utils{
 		}
 		return obj;
 	}
+	
+	static getElementById(id){
+		return document.getElementById(id);
+	}
 }
