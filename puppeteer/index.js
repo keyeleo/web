@@ -1,28 +1,25 @@
-const os=require('os');
-const puppeteer = require('puppeteer-core');
+var express = require('express');
+var app = express();
 
-const chromePath = (os.type()=='Linux')?
-    '/usr/bin/chromium-browser': ((os.type()=='Darwin')?
-    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':
-    '');
-const url='https://y.qq.com';
-const dataPath=(os.type()=='Linux')? '/data/': '';
-const imagePath=dataPath+'yqq.png';
+app.get('/test', function (req, res) {
+    res.end( 'hello puppeteer!' );
+})
 
-console.log('chromePath: '+chromePath+', dataPath: '+dataPath+', imagePath: '+imagePath);
+app.get('/open', function (req, res) {
+    console.log( 'baseUrl: '+req.baseUrl+', originalUrl: '+req.originalUrl+', query.url: '+req.query.url );
+    var browse=require('./js/browse');
+    browse(req.query.url);
+    res.end( 'open puppeteer!' );
+})
 
-(async () => {
-    const browser = await puppeteer.launch({
-    	executablePath: chromePath,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox'
-        ]
-    });
+app.get('/close', function (req, res) {
+    server.close();
+    res.end( 'close puppeteer!' );
+})
 
-    const page = await browser.newPage();
-    await page.goto(url);
-    await page.screenshot({path: imagePath});
+var server = app.listen(8080, function () {
 
-    browser.close();
-})();
+    var host = server.address().address
+    var port = server.address().port
+    console.log("server listen at: http://%s:%s", host, port)
+})
