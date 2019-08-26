@@ -1,0 +1,283 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"OL",
+				"OL_inspectJsonConfig"
+			],
+			[
+				"ins",
+				"inspectJsonConfig"
+			],
+			[
+				"Stat",
+				"StateGrid_Data_Online"
+			],
+			[
+				"Name",
+				"StationName"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/vic/Documents/project/web/puppeteer"
+	],
+	"file_history":
+	[
+		"/Users/vic/Documents/project/puppeteer/package-lock.json",
+		"/Users/vic/Documents/project/biad.plugins/UnrealPlugins/update.bat",
+		"/Users/vic/Documents/project/puppeteer/index.html",
+		"/Users/vic/Documents/project/puppeteer/js/require.js",
+		"/Users/vic/Documents/project/puppeteer/sina.js",
+		"/Users/vic/Documents/project/puppeteer/js/sina.js",
+		"/Users/vic/Documents/project/StateGridHTML/Json.html",
+		"/Users/vic/Documents/project/StateGridHTML/index2.html",
+		"/Users/vic/Documents/project/StateGridHTML/Test.html",
+		"/Users/vic/Documents/project/biad.plugins/UnrealPlugins/Plugins/GeometryBoolean/Source/ThirdParty/Cork/Cork.Build.cs",
+		"/Users/vic/Documents/project/biad.plugins/UnrealPlugins/Plugins/NetworkingLibrary/NetworkingLibrary.uplugin",
+		"/Users/vic/Documents/project/biad.plugins/UnrealPlugins/Plugins/NetworkingLibrary/Source/ThirdParty/Paho/Paho.Build.cs",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Plugins/Lumin/MagicLeapMedia/Source/MagicLeapMediaFactory/MagicLeapMediaFactory.Build.cs",
+		"/Users/vic/Documents/project/biad.plugins/UnrealPlugins/Plugins/GeometryBoolean/GeometryBoolean.uplugin",
+		"/Users/vic/Documents/project/biad.plugins/UnrealPlugins/Plugins/StateGridPlugins/HTMLMenuMain/HTMLMenuMain.uplugin",
+		"/Users/vic/Documents/project/UnrealGame/pixelstreaming/up.bat",
+		"/Users/vic/Documents/project/UnrealGame/pixelstreaming/Start_AWS_WithTURN_SignallingServer.ps1",
+		"/Users/vic/Documents/project/UnrealGame/pixelstreaming/Start_AWS_TURNServer.ps1",
+		"/Users/vic/Documents/project/UnrealGame/pixelstreaming/down.bat",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGrid.Start.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGrid.server.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGrid.InitJson.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.taizhou.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.zhalute.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.xiangtan.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.ximeng.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.linyi.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.nanjing.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.guquan.js",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.jiuquan.js",
+		"/Users/vic/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/4bfa53de2a27a03b95322fa7dd5a6074/Message/MessageTemp/630b5ae132c737f5fcd8aa2660dd3b9b/File/StateGrid.InitJson.js",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/Programs/PixelStreaming/WebServers/SignallingWebServer/runAWS_WithTURN.bat",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/ThirdParty/WebRTC/rev.23789/programs/Win64/VS2017/release/Start_AWS_TURNServer.ps1",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/ThirdParty/WebRTC/rev.23789/programs/Win64/VS2017/release/Start_AWS_TURNServer.bat",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/ThirdParty/WebRTC/rev.23789/programs/Win64/VS2017/release/Start_STUNServer.bat",
+		"/Users/vic/Documents/project/data/stategrid/stategrid/bin/iot/application.properties",
+		"/Users/vic/Documents/project/data/nginx/nginx.conf",
+		"/Users/vic/Documents/project/data/stategrid/restart.sh",
+		"/Users/vic/Documents/project/data/stategrid/start.sh",
+		"/Users/vic/Documents/project/data/tsinghua/restart.sh",
+		"/Users/vic/Documents/project/data/tsinghua/start.sh",
+		"/Users/vic/Documents/project/data/stategrid/setup.sh",
+		"/Users/vic/Documents/project/data/tsinghua/tsinghua/etc/docker-compose.yml",
+		"/Users/vic/Documents/project/data/stategrid/stategrid/etc/docker-compose.yml",
+		"/Users/vic/Documents/project/data/tsinghua/run.sh",
+		"/Users/vic/Documents/project/data/tsinghua/setup.sh",
+		"/Users/vic/Documents/project/data/stategrid/run_stategrid.sh",
+		"/Users/vic/Documents/project/data/stategrid/run_tsinghua.sh",
+		"/Users/vic/Documents/project/data/stategrid/tsinghua/etc/docker-compose.yml",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/src/main/resources/application.properties",
+		"/Users/vic/Documents/project/data/stategrid/tsinghua/bin/linyi/sgcc-linyi-p8093/WEB-INF/classes/application.yml",
+		"/Users/vic/Documents/project/data/stategrid/project/stategrid/etc/docker-compose.yml",
+		"/Users/vic/Documents/project/data/stategrid/run.sh",
+		"/Users/vic/Documents/project/data/stategrid/server/application.properties",
+		"/Users/vic/Documents/project/data/stategrid/etc/docker-compose.yml",
+		"/Users/vic/Documents/project/data/stategrid/etc/redis.conf",
+		"/Users/vic/Documents/project/data/stategrid/etc/start_server.sh",
+		"/Users/vic/Documents/project/data/stategrid/docker-compose.yml",
+		"/Users/vic/Documents/project/data/stategrid/etc/docker-compose copy.yml",
+		"/Users/vic/Documents/project/data/stategrid/etc/start.sh",
+		"/Users/vic/Documents/project/data/docker-compose copy.yml",
+		"/Users/vic/Documents/project/data/docker-compose.yml",
+		"/Users/vic/Documents/project/data/application.properties",
+		"/Users/vic/Documents/project/iotree.stategrid.server/go.sh",
+		"/Users/vic/Documents/project/thirdparty/SpringCloudStudy/my-mqtt-consumer2/pom.xml",
+		"/Users/vic/Documents/project/thirdparty/SpringCloudStudy/my-mqtt-producer/pom.xml",
+		"/Users/vic/Documents/project/thirdparty/SpringCloudStudy/my-mqtt-consumer/pom.xml",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/application.properties",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/iotree.stategrid.server-0.0.1-SNAPSHOT/BOOT-INF/classes/application.properties",
+		"/Users/vic/Documents/project/iotree.stategrid.server/IotServer/js/StateGridJson.NanJing.js",
+		"/Users/vic/Documents/project/UnrealGame/UnrealPlus/giti",
+		"/Users/vic/Documents/project/biad.plugins/UnrealPlugins/update.command",
+		"/Users/vic/Documents/project/biad.plugins/UnrealPlugins/Plugins/StateGridPlugins/VictoryPlugin/VictoryBPLibrary.uplugin",
+		"/Users/vic/Documents/project/ue4-iotree/Engine/Source/Programs/AutomationTool/Scripts/CopyBuildToStagingDirectory.Automation.cs",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/Programs/UnrealBuildTool/System/Plugins.cs",
+		"/Users/vic/Documents/project/biad.park.client/Plugins/HTMLMenuMain/HTMLMenuMain.uplugin",
+		"/Users/vic/Documents/project/biad.park.client/Plugins/GeometryBoolean/GeometryBoolean.uplugin",
+		"/Users/vic/Documents/project/biad.park.client/Plugins/GeometryBoolean/Source/GeometryBoolean/GeometryBoolean.Build.cs",
+		"/Users/vic/Documents/project/biad.park.client/Plugins/GeometryBoolean/Binaries/Mac/UE4Editor.modules",
+		"/Users/vic/Documents/project/biad.park.client/Plugins/HTMLMenuMain/Binaries/Mac/UE4Editor.modules",
+		"/Users/vic/Documents/project/thirdparty/cork/samples/ballA.off",
+		"/Users/vic/Documents/project/biad.park.client/Plugins/GeometryBoolean/Config/FilterPlugin.ini",
+		"/usr/local/Cellar/boost/1.69.0_2/include/boost/config.hpp",
+		"/Users/vic/Desktop/1_TXJChangFang16.uasset",
+		"/Users/vic/Documents/project/thirdpard/cork/Makefile",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/ThirdParty/Expat/Expat.Build.cs",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/ThirdParty/CEF3/CEF3.build.cs",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/ThirdParty/ANGLE/ANGLE.Build.cs",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Plugins/Animation/LiveLink/LiveLink.uplugin",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/ThirdParty/Distorm/Distorm.build.cs",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Plugins/Animation/LiveLink/Binaries/Mac/UE4Editor.modules",
+		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/SetupMono.sh",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Build/BatchFiles/GetMSBuildPath.bat",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Build/BatchFiles/Mac/SymbolicateOSXCrashLog.py",
+		"/Users/vic/Documents/project/UnrealEngine/Engine/Build/BatchFiles/Mac/Build.sh",
+		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/FixDependencyFiles.sh",
+		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/RunMono.sh",
+		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/GitDependencies.sh",
+		"/Users/vic/Documents/project/ue4-iotree/Setup.sh"
+	],
+	"find":
+	{
+		"height": 39.0
+	},
+	"find_in_files":
+	{
+		"height": 101.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "untitled.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 209.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
