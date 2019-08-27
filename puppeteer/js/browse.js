@@ -8,7 +8,7 @@ const imagePath=dataPath+'screenshot.png';
 // exports = module.exports = browse;
 
 module.exports = function (url){
-  const prefix='http://';
+  const prefix='http';
   if(!url.slice(0, prefix.length) === prefix)
     url='http://'+url;
   const chromePath = (os.type()=='Linux')?
