@@ -8,8 +8,14 @@ const imagePath=dataPath+'screenshot.png';
 // exports = module.exports = browse;
 
 module.exports = function (url){
+  const PageFetcher=require('./pagefetcher');
+  const pageFetcher=new PageFetcher();
+  pageFetcher.fetch('www.baidu.com');
+  let helper=new PageFetcher.Helper();
+  helper.log();
+
   const prefix='http';
-  if(!url.slice(0, prefix.length) === prefix)
+  if(!(url.slice(0, prefix.length) === prefix))
     url='http://'+url;
   const chromePath = (os.type()=='Linux')?
       '/usr/bin/chromium-browser': ((os.type()=='Darwin')?
