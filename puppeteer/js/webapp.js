@@ -13,10 +13,13 @@ exports = module.exports = function run(port){
         if(req.query.reload)
             delete require.cache[require.resolve('./pagefetcher')];
 
+        let url=req.query.url;
+        if(url==null)
+            url='http://vip.stock.finance.sina.com.cn/mkt/';
         const PageFetcher=require('./pagefetcher');
-        console.log( 'originalUrl: '+req.originalUrl+', query.url: '+req.query.url );
+        console.log( 'originalUrl: '+req.originalUrl+', query.url: '+url );
         const pageFetcher=new PageFetcher();
-        pageFetcher.fetch(req.query.url).then();
+        pageFetcher.fetch(url).then();
         // let helper=new PageFetcher.Helper();
         // helper.log();
 

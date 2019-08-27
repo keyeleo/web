@@ -1,5 +1,5 @@
 exports = module.exports = class UrlGenerator{
-	generate(d){
+	async generate(page){
 		console.log('generate urls');
 	}
 }
