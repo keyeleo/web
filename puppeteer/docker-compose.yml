@@ -11,6 +11,18 @@ services:
       MYSQL_PASSWORD: liu
     volumes:
       - ./data/mysql:/var/lib/mysql
+  postgres:
+    image: kiasaki/alpine-postgres
+    ports:
+      - 39008:5432
+    environment:
+      POSTGRES_USER: vic
+      POSTGRES_PASSWORD: liu
+      POSTGRES_DB: stocks
+      #PGDATA: /var/lib/postgresql/data/
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data/
+      - ./data/postgres/run:/run/postgresql
   puppeteer:
     image: hexxa/puppeteer-alpine
     ports:
@@ -18,5 +30,8 @@ services:
       - 9229:9229
     volumes:
       - ./:/data
+    depends_on:
+      - mysql
+      - postgres
     command:
       node --inspect=0.0.0.0:9229 /data/index.js
