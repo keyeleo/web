@@ -1,0 +1,22 @@
+version: '3.0'
+services:
+  mysql:
+    image: pluie/alpine-mysql
+    ports:
+      - 39009:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: stocks
+      MYSQL_USER: vic
+      MYSQL_PASSWORD: liu
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+  puppeteer:
+    image: hexxa/puppeteer-alpine
+    ports:
+      - 80:80
+      - 9229:9229
+    volumes:
+      - ./:/data
+    command:
+      node --inspect=0.0.0.0:9229 /data/index.js
