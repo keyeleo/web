@@ -9,7 +9,7 @@ exports = module.exports = function run(port){
         res.end( 'hello puppeteer!' );
     })
 
-    app.get('/open', function (req, res) {
+    app.get('/open', async function (req, res) {
         if(req.query.reload)
             delete require.cache[require.resolve('./pagefetcher')];
 
@@ -19,11 +19,11 @@ exports = module.exports = function run(port){
         const PageFetcher=require('./pagefetcher');
         console.log( 'originalUrl: '+req.originalUrl+', query.url: '+url );
         const pageFetcher=new PageFetcher();
-        pageFetcher.fetch(url).then();
+        const result=await pageFetcher.fetch(url);
         // let helper=new PageFetcher.Helper();
         // helper.log();
 
-        res.end( 'open puppeteer!' );
+        res.send(result);
     })
 
     app.get('/close', function (req, res) {

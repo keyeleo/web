@@ -48,11 +48,12 @@ class PageFetcher{
     const page = await this.browser.newPage();
     await page.goto(url);
 
-    await this.dataFetcher.fetch(page);
     await this.urlGenerator.generate(page);
+    const result=await this.dataFetcher.fetch(page);
 
     // await page.screenshot({path: imagePath});
     console.log('fetch page: '+url+', dataPath: '+dataPath+', imagePath: '+imagePath);
+    return result;
   }
 }
 
