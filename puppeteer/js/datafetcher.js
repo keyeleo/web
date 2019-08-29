@@ -1,5 +1,18 @@
 exports = module.exports = class DataFetcher{
 
+	constructor(){
+		this.fetchers=[];
+		const packages=[
+			'./fetch_stock_list',
+			'./fetch_financial_reports',
+		];
+		for(let i=0,ii=packages.length;i<ii;++i){
+		    delete require.cache[require.resolve(packages[i])];
+		    const Fetcher=require(packages[i]);
+			this.fetchers.push(new Fetcher());
+		}
+	}
+
 	connect(){
 		const pg=require('pg')
 		var conString = "postgres://vic:liu@code.biad.com.cn:39008/stocks";
@@ -21,44 +34,19 @@ exports = module.exports = class DataFetcher{
 	}
 
 	async fetch(page){
-		this.connect();
-	    //page.evaluate 方法运行在页面内部，并返回Promise到外部
-	    let result='body not found';
+		// this.connect();
+	    let result='fetcher not found';
 	    const bodyHandle = await page.$('body');
 	    if(bodyHandle){
-		    result = await page.evaluate((bodyHandle) => {
-		      let divList = [];
-		      let stockList = [];
-
-		      //all div
-		      // let divHandles=bodyHandle.querySelectorAll('div');
-		      // for(let divHandle of divHandles){
-		      //   let divObj={'id':divHandle.id, 'class':divHandle.class};
-		      //   divList.push(divObj);
-		      // }
-
-		      //涨幅榜
-		      let cnltContentHandle=bodyHandle.querySelector('#cnlt_contents');
-		      if(cnltContentHandle==null){
-		      	return 'cnlt_contents not found';
-		      }
-		      let tbodyHandle=cnltContentHandle.querySelector('tbody');
-		      let trHandles=tbodyHandle.querySelectorAll('tr');
-		      for(let trHandle of trHandles){
-		        let stock=[];
-		        let thHandles=trHandle.querySelectorAll('th');
-		        stock.push(thHandles[0].textContent);
-		        stock.push(thHandles[1].textContent);
-
-		        let tdHandles=trHandle.querySelectorAll('td');
-		        for(let td of tdHandles){
-		          stock.push(td.textContent);
-		        }
-		        stockList.push(stock);
-		      }
-
-		      return {'div':divList, 'stocks':stockList};
-		    }, bodyHandle);
+	    	const url=page.url();
+	    	for(let i=0,ii=this.fetchers.length;i<ii;++i){
+	    		let fetcher=this.fetchers[i];
+	    		if(url.indexOf(fetcher.page)!=-1){
+				    //page.evaluate 方法运行在页面内部，并返回Promise到外部
+				    result = await page.evaluate(fetcher.fetch, bodyHandle);
+				    break;
+	    		}
+			}
 		    await bodyHandle.dispose();
 	    }
 	    return result;
