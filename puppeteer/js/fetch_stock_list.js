@@ -1,42 +1,72 @@
 const Logger=require('./logger');
+const db=require('./dbconnector');
 
 exports = module.exports = class FetchStockList{
 
 	constructor(){
-		this.page='quote.eastmoney.com/stock_list';
+		// Done
+		// this.page='quote.eastmoney.com/stock_list';
 	}
 
 	fetch(bodyHandle){
-		let divList = [];
-		let stockList = [];
+		let data={};
 
-		//all div
-		// let divHandles=bodyHandle.querySelectorAll('div');
-		// for(let divHandle of divHandles){
-		//   let divObj={'id':divHandle.id, 'class':divHandle.class};
-		//   divList.push(divObj);
-		// }
+		//all ul
+		let ulHandles=bodyHandle.querySelectorAll('ul');
+		if(!ulHandles)
+			return '<ul> not found when fetch stock_list';
+		for(let ulHandle of ulHandles){
+			// exchange list
+			let liHandles=ulHandle.querySelectorAll('li');
+			if(!liHandles)
+				continue;
 
-		//涨幅榜
-		let cnltContentHandle=bodyHandle.querySelector('#cnlt_contents');
-		if(cnltContentHandle==null){
-			return 'FetchStockList Element not found';
+			// exchange: sh or sz
+			let ex=null;
+			let aNameHandle=ulHandle.querySelector('a');
+			if(aNameHandle)
+				ex=aNameHandle.name;
+			if(!ex)
+				continue;
+
+			// stocks list
+			let stockList = [];
+			for(let liHandle of liHandles){
+				let aHandle=liHandle.querySelector('a[href]');
+				if(aHandle){
+					let str=aHandle.textContent;
+					let code=str.substr(str.indexOf('(')+1,6);
+					let name=str.substr(0,str.indexOf('('));
+					let stock={};
+					stock[code]=name;
+					stockList.push(stock);
+				}
+			}
+
+			// data[ex+'_count']=liHandles.length;
+			data[ex]=stockList;
 		}
-		let tbodyHandle=cnltContentHandle.querySelector('tbody');
-		let trHandles=tbodyHandle.querySelectorAll('tr');
-		for(let trHandle of trHandles){
-		let stock=[];
-		let thHandles=trHandle.querySelectorAll('th');
-		stock.push(thHandles[0].textContent);
-		stock.push(thHandles[1].textContent);
 
-		let tdHandles=trHandle.querySelectorAll('td');
-		for(let td of tdHandles){
-			stock.push(td.textContent);
-		}
-			stockList.push(stock);
-		}
+		return data;
+	}
 
-		return {'div':divList, 'stocks':stockList};
+	process(data){
+		if(data){
+			// let sql='INSERT INTO stock_list (code,name) VALUES(\'%s\',\'%s\')';
+			for(let ex in data){
+				let stockList=data[ex];
+				for(let stock of stockList){
+					for(let code in stock){
+						let name=stock[code];
+						Logger.log(code+": "+name);
+						let sql='INSERT INTO summary (id,name,exchange) VALUES(\''+code+'\',\''+name+'\',\''+ex+'\')';
+						db.query(sql);
+						break;
+					}
+				}
+			}
+			Logger.log('Process stock list completed!');
+		}
+		return data;
 	}
 }

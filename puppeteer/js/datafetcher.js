@@ -9,34 +9,12 @@ exports = module.exports = class DataFetcher{
 			'./fetch_financial_reports',
 		];
 		for(let i=0,ii=packages.length;i<ii;++i){
-		    delete require.cache[require.resolve(packages[i])];
 		    const Fetcher=require(packages[i]);
 			this.fetchers.push(new Fetcher());
 		}
 	}
 
-	connect(){
-		const pg=require('pg')
-		var conString = "postgres://vic:liu@code.biad.com.cn:39008/stocks";
-		var client = new pg.Client(conString);
-		client.connect(function(err) {
-		    if(err) {
-		      return Logger.error('连接postgreSQL数据库失败', err);
-		    }
-		    client.query('SELECT * FROM summary', function(err, data) {
-		      if(err) {
-		        return Logger.error('查询失败', err);
-		      }else{
-		        // Logger.log('成功',data.rows); 
-		        Logger.log('成功',JSON.stringify(data.rows)); 
-		      }
-		      client.end();
-		    });
-		});
-	}
-
 	async fetch(page){
-		// this.connect();
 	    let result='fetcher not found';
 	    const bodyHandle = await page.$('body');
 	    if(bodyHandle){
@@ -46,6 +24,8 @@ exports = module.exports = class DataFetcher{
 	    		if(url.indexOf(fetcher.page)!=-1){
 				    //page.evaluate 方法运行在页面内部，并返回Promise到外部
 				    result = await page.evaluate(fetcher.fetch, bodyHandle);
+				    if(fetcher.process)
+				    	result=fetcher.process(result);
 				    break;
 	    		}
 			}

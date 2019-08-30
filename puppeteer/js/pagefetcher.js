@@ -5,6 +5,13 @@ const Logger=require('./logger');
 
 class PageFetcher{
   constructor(){
+    //remove these when release
+    // delete require.cache[require.resolve('./datafetcher')];
+    // delete require.cache[require.resolve('./urlgenerator')];
+    delete require.cache[require.resolve('./dbconnector')];
+    delete require.cache[require.resolve('./fetch_stock_list')];
+    // delete require.cache[require.resolve('./fetch_financial_reports')];
+
     this.browser=null;
     this.chromePath = (os.type()=='Linux')?
         '/usr/bin/chromium-browser': ((os.type()=='Darwin')?
@@ -12,8 +19,6 @@ class PageFetcher{
         '');
     Logger.log('chromePath: '+this.chromePath);
 
-    delete require.cache[require.resolve('./datafetcher')];
-    delete require.cache[require.resolve('./urlgenerator')];
     const DataFetch=require('./datafetcher');
     const UrlGenerator=require('./urlgenerator');
 
