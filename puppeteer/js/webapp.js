@@ -1,5 +1,5 @@
 const express = require('express');
-// const PageFetcher=require('./pagefetcher');
+const Logger=require('./logger');
 
 exports = module.exports = function run(port){
 
@@ -17,7 +17,7 @@ exports = module.exports = function run(port){
         if(url==null)
             url='http://vip.stock.finance.sina.com.cn/mkt/';
         const PageFetcher=require('./pagefetcher');
-        console.log( 'originalUrl: '+req.originalUrl+', query.url: '+url );
+        Logger.log( 'originalUrl: '+req.originalUrl+', query.url: '+url );
         const pageFetcher=new PageFetcher();
         const result=await pageFetcher.fetch(url);
         // let helper=new PageFetcher.Helper();
@@ -35,6 +35,6 @@ exports = module.exports = function run(port){
 
         const _host = server.address().address
         const _port = server.address().port
-        console.log("server listen at: http://%s:%s", _host, _port)
+        Logger.log("server listen at: http://"+_host+":"+_port)
     })
 }

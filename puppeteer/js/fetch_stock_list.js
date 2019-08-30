@@ -1,3 +1,5 @@
+const Logger=require('./logger');
+
 exports = module.exports = class FetchStockList{
 
 	constructor(){

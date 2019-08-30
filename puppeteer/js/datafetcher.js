@@ -1,3 +1,5 @@
+const Logger=require('./logger');
+
 exports = module.exports = class DataFetcher{
 
 	constructor(){
@@ -19,14 +21,14 @@ exports = module.exports = class DataFetcher{
 		var client = new pg.Client(conString);
 		client.connect(function(err) {
 		    if(err) {
-		      return console.error('连接postgreSQL数据库失败', err);
+		      return Logger.error('连接postgreSQL数据库失败', err);
 		    }
 		    client.query('SELECT * FROM summary', function(err, data) {
 		      if(err) {
-		        return console.error('查询失败', err);
+		        return Logger.error('查询失败', err);
 		      }else{
-		        // console.log('成功',data.rows); 
-		        console.log('成功',JSON.stringify(data.rows)); 
+		        // Logger.log('成功',data.rows); 
+		        Logger.log('成功',JSON.stringify(data.rows)); 
 		      }
 		      client.end();
 		    });

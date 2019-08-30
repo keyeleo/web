@@ -1,8 +1,7 @@
 const os=require('os');
 const puppeteer = require('puppeteer');
 // const puppeteer = require('puppeteer-core');
-// const DataFetch=require('./datafetcher');
-// const UrlGenerator=require('./urlgenerator');
+const Logger=require('./logger');
 
 class PageFetcher{
   constructor(){
@@ -11,7 +10,7 @@ class PageFetcher{
         '/usr/bin/chromium-browser': ((os.type()=='Darwin')?
         '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':
         '');
-    console.log('chromePath: '+this.chromePath);
+    Logger.log('chromePath: '+this.chromePath);
 
     delete require.cache[require.resolve('./datafetcher')];
     delete require.cache[require.resolve('./urlgenerator')];
@@ -52,14 +51,14 @@ class PageFetcher{
     const result=await this.dataFetcher.fetch(page);
 
     // await page.screenshot({path: imagePath});
-    console.log('fetch page: '+url+', dataPath: '+dataPath+', imagePath: '+imagePath);
+    Logger.log('fetch page: '+url+', dataPath: '+dataPath+', imagePath: '+imagePath);
     return result;
   }
 }
 
 class FetcherHelper{
   log(){
-    console.log('helper');
+    Logger.log('helper');
   }
 }
 
