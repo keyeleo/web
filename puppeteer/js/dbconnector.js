@@ -4,48 +4,49 @@ const Logger=require('./logger');
 
 exports = module.exports = class Postgres{
 	constructor(){
+		this.dbs={};
+		this.connecting={};
 	}
 
 	sleep(ms){
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	async connect(){
-		if(!this.client){
-			while(this.connecting)
+	async connect(db){
+		if(!this.dbs[db]){
+			while(this.connecting[db])
 				await this.sleep(10);
-			if(this.client)
-				return;
-
-			this.connecting=true;
-			var conString = "postgres://vic:liu@code.biad.com.cn:39008/stocks";
-			var client = new pg.Client(conString);
-			client.on('end',()=>{
-				this.client=null;
-		    	Logger.log('PostgreSQL end');
-			});
-			client.on('error',err=>{
-				this.client=null;
-		    	Logger.log('PostgreSQL error: '+err);
-			});
-			// await client.connect();
-			await client.connect(function(err) {
-			    if(err)
-			    	Logger.error('PostgreSQL connect failed: ', err);
-			    else{
-			    	client=null;
-			    }
-			});
-	    	this.client=client;
-			this.connecting=false;
-	    	Logger.log('PostgreSQL connected');
+			if(!this.dbs[db]){
+				this.connecting[db]=true;
+				var conString = "postgres://vic:liu@code.biad.com.cn:39008/"+db;
+				var client = new pg.Client(conString);
+				client.on('end',()=>{
+					this.dbs[db]=null;
+			    	Logger.log('PostgreSQL end');
+				});
+				client.on('error',err=>{
+					this.dbs[db]=null;
+			    	Logger.log('PostgreSQL error: '+err);
+				});
+				await client.connect(function(err) {
+				    if(err)
+				    	Logger.error('PostgreSQL connect failed: ', err);
+				    else{
+				    	client=null;
+				    }
+				});
+		    	this.dbs[db]=client;
+				this.connecting[db]=false;
+		    	Logger.log('PostgreSQL connected');
+			}
 		}
+		return this.dbs[db];
 	}
 
-	async doQuery(sql, func){
-		await this.connect();
+	async doQuery(db, sql, func){
+		let con=await this.connect(db);
 
-		await this.client.query(sql, function(err, data) {
+		await con.query(sql, function(err, data) {
 			if(err) {
 				Logger.log('Query failed, sql='+err);
 			}else{
@@ -56,13 +57,13 @@ exports = module.exports = class Postgres{
 		});
 	}
 
-	destroy(){
-		if(this.client)this.client.end();
+	destroy(db){
+		if(this.dbs[db])this.dbs[db].end();
 	}
 
-	static query(sql, func){
+	static query(db, sql, func){
 		if(!this.instance)
 			this.instance=new Postgres();
-		this.instance.doQuery(sql, func);
+		this.instance.doQuery(db, sql, func);
 	}
 }

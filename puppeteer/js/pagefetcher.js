@@ -10,7 +10,7 @@ class PageFetcher{
     // delete require.cache[require.resolve('./urlgenerator')];
     delete require.cache[require.resolve('./dbconnector')];
     delete require.cache[require.resolve('./fetch_stock_list')];
-    // delete require.cache[require.resolve('./fetch_financial_reports')];
+    delete require.cache[require.resolve('./fetch_financial_reports')];
 
     this.browser=null;
     this.chromePath = (os.type()=='Linux')?

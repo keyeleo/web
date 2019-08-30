@@ -60,7 +60,7 @@ exports = module.exports = class FetchStockList{
 						let name=stock[code];
 						Logger.log(code+": "+name);
 						let sql='INSERT INTO summary (id,name,exchange) VALUES(\''+code+'\',\''+name+'\',\''+ex+'\')';
-						db.query(sql);
+						db.query('stocks',sql);
 						break;
 					}
 				}
