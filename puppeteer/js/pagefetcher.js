@@ -6,13 +6,12 @@ const Logger=require('./logger');
 class PageFetcher{
   constructor(){
     //remove these when release
-    // delete require.cache[require.resolve('./datafetcher')];
-    // delete require.cache[require.resolve('./urlgenerator')];
     delete require.cache[require.resolve('./dbconnector')];
     delete require.cache[require.resolve('./fetch_stock_list')];
     delete require.cache[require.resolve('./fetch_financial_t')];
     delete require.cache[require.resolve('./fetch_financial')];
 
+    // browser path
     this.browser=null;
     this.chromePath = (os.type()=='Linux')?
         '/usr/bin/chromium-browser': ((os.type()=='Darwin')?
@@ -20,11 +19,17 @@ class PageFetcher{
         '');
     Logger.log('chromePath: '+this.chromePath);
 
-    const DataFetch=require('./datafetcher');
-    const UrlGenerator=require('./urlgenerator');
-
-    this.dataFetcher=new DataFetch();
-    this.urlGenerator=new UrlGenerator();
+    // fetchers factory
+    this.fetchers=[];
+    const packages=[
+      './fetch_stock_list',
+      './fetch_financial_t',
+      './fetch_financial',
+    ];
+    for(let i=0,ii=packages.length;i<ii;++i){
+        const Fetcher=require(packages[i]);
+      this.fetchers.push(new Fetcher());
+    }
   }
 
   destroy(){
@@ -34,6 +39,7 @@ class PageFetcher{
 
   async doFetch(url){
     if(this.browser==null){
+      // connect to browser
       this.browser = await puppeteer.launch({
         executablePath: this.chromePath,
           args: [
@@ -46,15 +52,31 @@ class PageFetcher{
     const dataPath=(os.type()=='Linux')? '/data/': '';
     const imagePath=dataPath+'screenshot.png';
   
+    // fix url
     const prefix='http';
     if(!(url.slice(0, prefix.length) === prefix))
       url='http://'+url;
 
+    // open page
     const page = await this.browser.newPage();
     await page.goto(url);
 
-    await this.urlGenerator.generate(page);
-    const result=await this.dataFetcher.fetch(page);
+    // fetch & process
+    var result='fetcher not found';
+    const bodyHandle = await page.$('body');
+    if(bodyHandle){
+      for(let i=0,ii=this.fetchers.length;i<ii;++i){
+        let fetcher=this.fetchers[i];
+        if(url.indexOf(fetcher.page)!=-1){
+          //page.evaluate 方法运行在页面内部，并返回Promise到外部
+          result = await page.evaluate(fetcher.fetch, bodyHandle);
+          if(fetcher.process)
+            result=fetcher.process(result);
+          break;
+        }
+      }
+      await bodyHandle.dispose();
+    }
 
     // await page.screenshot({path: imagePath});
     Logger.log('fetch page: '+url+', dataPath: '+dataPath+', imagePath: '+imagePath);
@@ -69,12 +91,5 @@ class PageFetcher{
   }
 }
 
-class FetcherHelper{
-  log(){
-    Logger.log('helper');
-  }
-}
-
 exports = module.exports = PageFetcher;
-exports.Helper = FetcherHelper;
 

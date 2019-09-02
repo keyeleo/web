@@ -19,8 +19,6 @@ exports = module.exports = function run(port){
         const PageFetcher=require('./pagefetcher');
         Logger.log( 'originalUrl: '+req.originalUrl+', query.url: '+url );
         const result=await PageFetcher.fetch(url);
-        // let helper=new PageFetcher.Helper();
-        // helper.log();
 
         res.send(result);
     })
