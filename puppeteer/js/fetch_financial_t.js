@@ -15,9 +15,25 @@ exports = module.exports = class FetchFinancialTrigger{
 
 	process(data){
 		if(data){
-			let codes=[600887, 601857];
-			//async process list
-			this.processList(codes);
+			let sql='SELECT id FROM summary WHERE id<\'001000\' OR id>\'300000\' AND id<\'300100\' LIMIT 2';
+			db.query('stocks',sql,(data)=>{
+				let ids=[];
+				for(let row of data.rows){
+					ids.push(row.id);
+				}
+				//async process list
+				this.processList(ids);
+			});
+
+			sql='SELECT id FROM summary WHERE id>\'600000\' AND id<\'604000\' LIMIT 2';
+			db.query('stocks',sql,(data)=>{
+				let ids=[];
+				for(let row of data.rows){
+					ids.push(row.id);
+				}
+				//async process list
+				this.processList(ids);
+			});
 		}
 		return data;
 	}

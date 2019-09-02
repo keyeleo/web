@@ -52,7 +52,7 @@ exports = module.exports = class Postgres{
 			}else{
 				if(func)
 					func(data);
-				Logger.log('Query sql='+sql+', result='+JSON.stringify(data.rows)); 
+				// Logger.log('Query sql='+sql+', result='+JSON.stringify(data.rows)); 
 			}
 		});
 	}

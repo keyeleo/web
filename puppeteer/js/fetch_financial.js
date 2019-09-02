@@ -109,7 +109,11 @@ exports = module.exports = class FetchFinancial{
 	}
 
 	tableofCode(code){
-		return 't'+code;
+		return 'f10_'+code;
+	}
+
+	dbofCode(code){
+		return 'f10_'+(code/1000<600)?'sz':'sh';
 	}
 
 	insertData(code,data){
@@ -142,8 +146,6 @@ ato, \
 ito, \
 rto \
 		) VALUES(\''
-
-
 			+data.period+'\','
 			+data.sc+','
 			+data.ta+','
@@ -172,8 +174,8 @@ rto \
 			+data.ito+','
 			+data.rto+')'
 		;
-		Logger.log('insert sql='+sql);
-		db.query('financial',sql);
+		// Logger.log('insert sql='+sql);
+		db.query(dbofCode(code),sql);
 	}
 	
 	updateData(code,data){
@@ -205,8 +207,8 @@ rto \
 			+'ito='+data.sc+','
 			+'rto='+data.sc
 			+' WHERE period='+data.period;
-		Logger.log('update sql='+sql);
-		db.query('financial',sql);
+		// Logger.log('update sql='+sql);
+		db.query(dbofCode(code),sql);
 	}
 
 	createTable(code){
@@ -239,8 +241,8 @@ rto \
 		    ito decimal(5,2), \
 		    rto decimal(5,2) \
 		)';
-		db.query('financial',sql);
 		Logger.log('table '+this.tableofCode(code)+' created, sql='+sql);
+		db.query(dbofCode(code),sql);
 
 		/*
 		总股本	Share Capital	SC
