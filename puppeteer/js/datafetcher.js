@@ -6,7 +6,8 @@ exports = module.exports = class DataFetcher{
 		this.fetchers=[];
 		const packages=[
 			'./fetch_stock_list',
-			'./fetch_financial_reports',
+			'./fetch_financial_t',
+			'./fetch_financial',
 		];
 		for(let i=0,ii=packages.length;i<ii;++i){
 		    const Fetcher=require(packages[i]);

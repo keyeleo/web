@@ -15,11 +15,10 @@ exports = module.exports = function run(port){
 
         let url=req.query.url;
         if(url==null)
-            url='http://vip.stock.finance.sina.com.cn/mkt/';
+            res.end('no url set(url=http://website)');
         const PageFetcher=require('./pagefetcher');
         Logger.log( 'originalUrl: '+req.originalUrl+', query.url: '+url );
-        const pageFetcher=new PageFetcher();
-        const result=await pageFetcher.fetch(url);
+        const result=await PageFetcher.fetch(url);
         // let helper=new PageFetcher.Helper();
         // helper.log();
 

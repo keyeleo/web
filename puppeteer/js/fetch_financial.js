@@ -1,7 +1,7 @@
 const Logger=require('./logger');
 const db=require('./dbconnector');
 
-exports = module.exports = class FetchFinancialReports{
+exports = module.exports = class FetchFinancial{
 
 	constructor(){
 		//http://quotes.money.163.com/f10/zycwzb_000876.html
@@ -87,14 +87,17 @@ exports = module.exports = class FetchFinancialReports{
 		fill('tl',16);
 		fill('cl',17);
 
-		return data;
+		//f10/zycwzb_000876.html
+		let pathname=window.location.pathname;
+		let code=pathname.substr(pathname.indexOf('_')+1,6);
+		return {'code':code, 'data':data};
 	}
 
 	process(data){
 		if(data){
-			let code='000876';
-			// this.createTable(code);
-			for(let d of data){
+			let code=data.code;
+			this.createTable(code);
+			for(let d of data.data){
 				this.insertData(code,d);
 				break;
 			}

@@ -10,7 +10,8 @@ class PageFetcher{
     // delete require.cache[require.resolve('./urlgenerator')];
     delete require.cache[require.resolve('./dbconnector')];
     delete require.cache[require.resolve('./fetch_stock_list')];
-    delete require.cache[require.resolve('./fetch_financial_reports')];
+    delete require.cache[require.resolve('./fetch_financial_t')];
+    delete require.cache[require.resolve('./fetch_financial')];
 
     this.browser=null;
     this.chromePath = (os.type()=='Linux')?
@@ -31,7 +32,7 @@ class PageFetcher{
       this.browser.close();
   }
 
-  async fetch(url){
+  async doFetch(url){
     if(this.browser==null){
       this.browser = await puppeteer.launch({
         executablePath: this.chromePath,
@@ -58,6 +59,13 @@ class PageFetcher{
     // await page.screenshot({path: imagePath});
     Logger.log('fetch page: '+url+', dataPath: '+dataPath+', imagePath: '+imagePath);
     return result;
+  }
+
+  static async fetch(url){
+    if(!this.instance){
+      this.instance=new PageFetcher();
+    }
+    return this.instance.doFetch(url);
   }
 }
 
