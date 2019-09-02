@@ -4,68 +4,269 @@ const db=require('./dbconnector');
 exports = module.exports = class FetchFinancialReports{
 
 	constructor(){
-		this.page='data.eastmoney.com/bbsj/yjbb';
+		//http://quotes.money.163.com/f10/zycwzb_000876.html
+		this.page='quotes.money.163.com/f10/';
 	}
 
 	fetch(bodyHandle){
-		let data=[];
-		let hContent=bodyHandle.querySelector('.content');
-		if(!hContent)
-			return '.content not found when fetch reports';
-		let hPageNav=hContent.querySelector('#PageNav');
-		if(!hPageNav)
-			return '#PageNav not found when fetch reports';
-		let hTable=hContent.querySelector('table');
+		function initData(period){
+			let data={};
+			data.period=period;
+			data.sc=0;
+			data.ta=0;
+			data.tl=0;
+			data.ca=0;
+			data.ivt=0;
+			data.tr=0;
+			data.dr=0;
+			data.adv=0;
+			data.cl=0;
+			data.gr=0;
+			data.cor=0;
+			data.np=0;
+			data.gm=0;
+			data.pm=0;
+			data.ocf=0;
+			data.icf=0;
+			data.fcf=0;
+			data.roe=0;
+			data.roa=0;
+			data.cr=0;
+			data.atr=0;
+			data.ocfr=0;
+			data.er=0;
+			data.ato=0;
+			data.ito=0;
+			data.rto=0;
+			return data;
+		}
+
+		function fill(field,idx){
+			let hta=hRows[idx];
+			let hData=hta.querySelectorAll('td');
+			if(hData.length!=data.length)
+				return;
+			for(let i=0;i<hData.length;++i){
+				let value=hData[i].textContent.replace(/\,/g,'');
+				// 10k => 1m
+				value=value/100;
+				let d=data[i];
+				d[field]=value;
+			}		
+		}
+	
+		var data=[];
+
+		let tbodySelector='#scrollTable > div.col_r > table > tbody';
+		let hTable=bodyHandle.querySelector(tbodySelector);
 		if(!hTable)
-			return '<table> not found when fetch reports';
-		let hTHead=hTable.querySelector('thead');
-		if(!hTHead)
-			return '<thead> not found when fetch reports';
-		let hBody=hTable.querySelector('tbody');
-		if(!hBody)
-			return '<tbody> not found when fetch reports';
+			return '.tbody not found when fetch reports';
 		let hRows=hTable.querySelectorAll('tr');
 		if(!hRows)
-			return '<tr> not found when fetch reports';
+			return '<tr> not found when fetch rows';
+		if(hRows.length<=0)
+			return 'data not found when fetch head';
 
-		//all rows
-		for(let hRow of hRows){
-			let report={};
-			//all columns
-			let hCols=hRow.querySelectorAll('td');
-			if(!hCols || hCols.length<13)
-				continue;
-
-			//period
-			let hPeriod=hCols[0].querySelector('span');
-			if(!hPeriod)
-				return '<span> not found when fetch reports: 公告期';
-			report.period=hPeriod.textContent;
-
-			//Growth
-			let hGrowth=hCols[4].querySelector('span');
-			if(!hGrowth)
-				return '<span> not found when fetch reports: 营收增长率';
-			report.growth=hGrowth.textContent;
-
-			//ROE
-			let hROE=hCols[10].querySelector('span');
-			if(!hROE)
-				return '<span> not found when fetch reports: ROE';
-			report.roe=hROE.textContent;
-
-			data.push(report);
+		// parse head
+		let hHead=hRows[0];
+		let hPeriods=hHead.querySelectorAll('th');
+		if(!hPeriods)
+			return '<th> not found when fetch period';
+		for(let hPeriod of hPeriods){
+			let str=hPeriod.textContent;
+			let year=str.substr(0,4);
+			let quater=str.substr(5,2)/3;
+			let period=year+'Q'+quater;
+			let d=initData(period);
+			data.push(d);
 		}
+
+		// ta
+		fill('ta',14);
+		fill('ca',15);
+		fill('tl',16);
+		fill('cl',17);
 
 		return data;
 	}
 
 	process(data){
 		if(data){
-			let sql='SHOW TABLES';
-			db.query('reports', sql);
-
+			let code='000876';
+			// this.createTable(code);
+			for(let d of data){
+				this.insertData(code,d);
+				break;
+			}
 		}
 		return data;
+	}
+
+	tableofCode(code){
+		return 't'+code;
+	}
+
+	insertData(code,data){
+		let sql='INSERT INTO '+this.tableofCode(code)+' ( \
+period, \
+sc, \
+ta, \
+tl, \
+ca, \
+ivt, \
+tr, \
+dr, \
+adv, \
+cl, \
+gr, \
+cor, \
+np, \
+gm, \
+pm, \
+ocf, \
+icf, \
+fcf, \
+roe, \
+roa, \
+cr, \
+atr, \
+ocfr, \
+er, \
+ato, \
+ito, \
+rto \
+		) VALUES(\''
+
+
+			+data.period+'\','
+			+data.sc+','
+			+data.ta+','
+			+data.tl+','
+			+data.ca+','
+			+data.ivt+','
+			+data.tr+','
+			+data.dr+','
+			+data.adv+','
+			+data.cl+','
+			+data.gr+','
+			+data.cor+','
+			+data.np+','
+			+data.gm+','
+			+data.pm+','
+			+data.ocf+','
+			+data.icf+','
+			+data.fcf+','
+			+data.roe+','
+			+data.roa+','
+			+data.cr+','
+			+data.atr+','
+			+data.ocfr+','
+			+data.er+','
+			+data.ato+','
+			+data.ito+','
+			+data.rto+')'
+		;
+		Logger.log('insert sql='+sql);
+		db.query('financial',sql);
+	}
+	
+	updateData(code,data){
+		let sql='UPDATE '+this.tableofCode(code)+' SET '
+			+'sc='+data.sc+','
+			+'ta='+data.sc+','
+			+'tl='+data.sc+','
+			+'ca='+data.sc+','
+			+'ivt='+data.sc+','
+			+'tr='+data.sc+','
+			+'dr='+data.sc+','
+			+'adv='+data.sc+','
+			+'cl='+data.sc+','
+			+'gr='+data.sc+','
+			+'cor='+data.sc+','
+			+'np='+data.sc+','
+			+'gm='+data.sc+','
+			+'pm='+data.sc+','
+			+'ocf='+data.sc+','
+			+'icf='+data.sc+','
+			+'fcf='+data.sc+','
+			+'roe='+data.sc+','
+			+'roa='+data.sc+','
+			+'cr='+data.sc+','
+			+'atr='+data.sc+','
+			+'ocfr='+data.sc+','
+			+'er='+data.sc+','
+			+'ato='+data.sc+','
+			+'ito='+data.sc+','
+			+'rto='+data.sc
+			+' WHERE period='+data.period;
+		Logger.log('update sql='+sql);
+		db.query('financial',sql);
+	}
+
+	createTable(code){
+		let sql='CREATE TABLE '+this.tableofCode(code)+' ( \
+		    period character varying(6) primary key, \
+		    sc integer, \
+		    ta decimal(8,2), \
+		    tl decimal(8,2), \
+		    ca decimal(8,2), \
+		    ivt decimal(8,2), \
+		    tr decimal(8,2), \
+		    dr decimal(8,2), \
+		    adv decimal(8,2), \
+		    cl decimal(8,2), \
+		    gr decimal(9,2), \
+		    cor decimal(8,2), \
+		    np decimal(8,2), \
+		    gm decimal(5,2), \
+		    pm decimal(5,2), \
+		    ocf decimal(8,2), \
+		    icf decimal(8,2), \
+		    fcf decimal(8,2), \
+		    roe decimal(5,2), \
+		    roa decimal(5,2), \
+		    cr decimal(5,2), \
+		    atr decimal(5,2), \
+		    ocfr decimal(5,2), \
+		    er decimal(5,2), \
+		    ato decimal(5,2), \
+		    ito decimal(5,2), \
+		    rto decimal(5,2) \
+		)';
+		db.query('financial',sql);
+		Logger.log('table '+this.tableofCode(code)+' created, sql='+sql);
+
+		/*
+		总股本	Share Capital	SC
+		decimal(8,2)[单位: 最大值] => [亿: 99万亿], [百万: 9999千亿]
+		(亿)
+		总资产	Total Assets	TA
+		总负债	Total Liabilities	TL
+		流动资产	Current Assets	CA
+		流动负债	Current Liabilities	CL
+		(百万)
+		营收	Gross Revenue	GR
+		存货	Inventory	IVT
+		应收账	Trade Recveivables	TR
+		预收款	Deposit Recived	DR
+		预付款	Advance	ADV
+		营业成本	Cost of Revenues	COR
+		净利	Net Profit	NP
+		经营现金流	Operating Cash Flow	OCF
+		投资现金流	Investment Cash Flow	ICF
+		筹资现金流	Financial Cash Flow	FCF
+		(%)
+		毛利率	Gross Margin	GM
+		净利率	Profit Margin	PM
+		净资产收益率	Return on Equity	ROE
+		总资产收益率	Return on Assets	ROA
+		流动比率	CurrentRatio	CR
+		速动比率	Acid-test-Ratio	ATR
+		现金流量比率	Operating Cash Flow Ratio	OCFR
+		产权比率	Equity Ratio	ER
+		总资产周转率	Total Asset Turnover	ATO
+		存货周转率	Inventory TurnOver	ITO
+		应收账周转率	Receivable TurnOver	RTO
+		*/
 	}
 }
