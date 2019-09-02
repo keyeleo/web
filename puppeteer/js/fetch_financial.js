@@ -50,6 +50,9 @@ exports = module.exports = class FetchFinancial{
 				let value=hData[i].textContent.replace(/\,/g,'');
 				// 10k => 1m
 				value=value/100;
+				// 1m => 100m
+				if(idx>=14 && idx<=17)
+					value=value/100;
 				let d=data[i];
 				d[field]=value;
 			}		
