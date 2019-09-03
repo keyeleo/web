@@ -8,8 +8,11 @@ class PageFetcher{
     //remove these when release
     delete require.cache[require.resolve('./dbconnector')];
     delete require.cache[require.resolve('./fetch_stock_list')];
-    delete require.cache[require.resolve('./fetch_financial_t')];
     delete require.cache[require.resolve('./fetch_financial')];
+    delete require.cache[require.resolve('./fetch_financial_main')];
+    delete require.cache[require.resolve('./fetch_financial_balance')];
+    delete require.cache[require.resolve('./fetch_financial_cash')];
+    delete require.cache[require.resolve('./fetch_financial_profit')];
 
     // browser path
     this.browser=null;
@@ -23,8 +26,11 @@ class PageFetcher{
     this.fetchers=[];
     const packages=[
       './fetch_stock_list',
-      './fetch_financial_t',
       './fetch_financial',
+      './fetch_financial_main',
+      './fetch_financial_balance',
+      './fetch_financial_cash',
+      './fetch_financial_profit',
     ];
     for(let i=0,ii=packages.length;i<ii;++i){
         const Fetcher=require(packages[i]);
