@@ -95,8 +95,11 @@ exports = module.exports = class FetchFinancial{
 		fill('adv',);
 			fill('cl',17);
 			fill('gr',4);
+		fill('cor',37);
+		fill('np',36);
+		data.np=data.np-data.cor;
+		data.roa=data.np/(data.ta+data.ta)/2;
 		fill('cor',8);
-			fill('np',11);
 		fill('gm',);
 		fill('pm',);
 			fill('ocf',12);
@@ -108,9 +111,11 @@ exports = module.exports = class FetchFinancial{
 		fill('atr',);
 		fill('ocfr',);
 		fill('er',);
-		fill('ato',);
-		fill('ito',);
+		// fill('ato',);
+		// fill('ito',);
 		fill('rto',);
+		data.ito=data.cor/(data.ivt+data.ivt)/2;
+
 
 		//f10/zycwzb_000876.html
 		let pathname=window.location.pathname;

@@ -85,7 +85,7 @@ exports = module.exports = class FetchFinancial{
 		}
 
 		fill('period',);
-		fill('sc',);
+		fill('sc',1);
 		fill('ta',14);
 		fill('tl',16);
 		fill('ca',15);
@@ -96,7 +96,8 @@ exports = module.exports = class FetchFinancial{
 		fill('cl',17);
 		fill('gr',4);
 		fill('cor',);
-		fill('np',11);
+		fill('npas',10);
+		fill('npc',11);
 		fill('gm',);
 		// fill('pm',);
 		fill('ocf',12);
@@ -106,15 +107,18 @@ exports = module.exports = class FetchFinancial{
 		fill('roa',);
 		// fill('cr',);
 		// fill('atr',);
-		fill('ocfr',);
+		//fill('ocfr',);
 		// fill('er',);
-		fill('ato',);
-		fill('ito',);
-		fill('rto',);
+		// fill('ato',);
+		// fill('ito',);
+		//fill('rto',);
 
+		data.sc=data.npas/data.sc;
 		data.cr=data.ca/data.cl;
 		data.er=data.tl/(data.ta-data.tl);
 		data.pm=data.np/data.gr;
+		data.ato=data.gr/(data.ta+data.ta)/2;
+		data.ocfr=data.ocf/data.cl;
 
 		//f10/zycwzb_000876.html
 		let pathname=window.location.pathname;
@@ -276,31 +280,35 @@ exports = module.exports = class FetchFinancial{
 		(亿)
 		总资产	Total Assets	TA
 		总负债	Total Liabilities	TL
+		//归属净资产	Equity Attributable to ShareHolders	EAS
 		流动资产	Current Assets	CA
 		流动负债	Current Liabilities	CL
 		(百万)
-		营收	Gross Revenue	GR
 		存货	Inventory	IVT
 		应收账	Trade Recveivables	TR
+		应付款	Account Payable	AP
 		预收款	Deposit Recived	DR
 		预付款	Advance	ADV
+		营收	Gross Revenue	GR
 		营业成本	Cost of Revenues	COR
 		净利	Net Profit	NP
+		归属净利	Net Profit Attributable to ShareHolders	NPAS
+		扣非净利	Net Profit Cut 	NPC
 		经营现金流	Operating Cash Flow	OCF
 		投资现金流	Investment Cash Flow	ICF
 		筹资现金流	Financial Cash Flow	FCF
 		(%)
-		毛利率	Gross Margin	GM
-		净利率	Profit Margin	PM
+		// 毛利率	Gross Margin	GM
+		// 净利率	Profit Margin	PM
 		净资产收益率	Return on Equity	ROE
 		总资产收益率	Return on Assets	ROA
 		流动比率	CurrentRatio	CR
 		速动比率	Acid-test-Ratio	ATR
-		现金流量比率	Operating Cash Flow Ratio	OCFR
+		//现金流量比率	Operating Cash Flow Ratio	OCFR
 		产权比率	Equity Ratio	ER
-		总资产周转率	Total Asset Turnover	ATO
-		存货周转率	Inventory TurnOver	ITO
-		应收账周转率	Receivable TurnOver	RTO
+		//总资产周转率	Total Asset Turnover	ATO
+		//存货周转率	Inventory TurnOver	ITO
+		//应收账周转率	Receivable TurnOver	RTO
 		*/
 	}
 }
