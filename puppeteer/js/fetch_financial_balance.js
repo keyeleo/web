@@ -90,13 +90,13 @@ exports = module.exports = class FetchFinancial{
 		// fill('sc',);
 		// fill('ta',14);
 		// fill('tl',16);
-		// fill('ca',15);
+		fill('ca',27);
 		fill('ivt',22);
 		fill('tr',9);
 		fill('ap',65);
 		fill('dr',66);
 		fill('adv',10);
-		// fill('cl',17);
+		fill('cl',89);
 		// fill('gr',4);
 		// fill('cor',);
 		// fill('np',);

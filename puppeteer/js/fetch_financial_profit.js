@@ -87,7 +87,6 @@ exports = module.exports = class FetchFinancial{
 
 			// temp fields
 			d.gp=0;		//Gross profit
-			d.tax=0;	//tax
 
 			data.push(d);
 		}
@@ -101,9 +100,9 @@ exports = module.exports = class FetchFinancial{
 		// fill('dr',66);
 		// fill('adv',10);
 		// fill('cl',17);
-		// fill('gr',4);
+		fill('gr',1);
 		fill('cor',8);
-		// fill('np',);
+		fill('np',40);
 		// fill('npas',10);
 		// fill('npc',11);
 		// fill('gm',);
@@ -121,12 +120,12 @@ exports = module.exports = class FetchFinancial{
 		// fill('ito',);
 		// fill('rto',);
 
-		fill('gp',36);
-		fill('tax',37);
+		fill('gp',37);
 
 		for(let i=0;i<data.length;++i){
 			let d=data[i];
-			d.np=d.gp-d.tax;
+			if(d.gr!=0)
+				d.pm=d.np/d.gr;
 			if(i==data.length-1){
 				if(d.ivt!=0)
 					d.ito=d.cor/d.ivt;
@@ -182,7 +181,7 @@ exports = module.exports = class FetchFinancial{
 			// +'npas='+data.npas+','
 			// +'npc='+data.npc+','
 			// +'gm='+data.gm+','
-			// +'pm='+data.pm+','
+			+'pm='+data.pm+','
 			// +'ocf='+data.ocf+','
 			// +'icf='+data.icf+','
 			// +'fcf='+data.fcf+','

@@ -14,6 +14,8 @@ exports = module.exports = class FetchFinancialTrigger{
 	}
 
 	process(data){
+		this.processList(['000876']);
+		return data;
 		if(data){
 			let sql='SELECT id FROM summary WHERE id<\'001000\' OR id>\'300000\' AND id<\'300100\' LIMIT 2';
 			db.query('stocks',sql,(data)=>{

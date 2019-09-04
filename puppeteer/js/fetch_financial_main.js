@@ -134,8 +134,6 @@ exports = module.exports = class FetchFinancial{
 				d.cr=d.ca/d.cl;
 			if(d.ta!=d.tl)
 				d.er=d.tl/(d.ta-d.tl);
-			if(d.gr!=0)
-				d.pm=d.np/d.gr;
 			if(d.cl!=0)
 				d.ocfr=d.ocf/d.cl;
 			if(i==data.length-1){
