@@ -5,7 +5,7 @@ exports = module.exports = class FetchFinancial{
 
 	constructor(){
 		//http://quotes.money.163.com/f10/zycwzb_000876.html
-		this.page='quotes.money.163.com/f10/zycwzb';
+		this.page='quotes.money.163.com/f10/lrb';
 	}
 
 	fetch(bodyHandle){
@@ -18,12 +18,15 @@ exports = module.exports = class FetchFinancial{
 			data.ca=0;
 			data.ivt=0;
 			data.tr=0;
+			data.ap=0
 			data.dr=0;
 			data.adv=0;
 			data.cl=0;
 			data.gr=0;
 			data.cor=0;
 			data.np=0;
+			data.npas=0;
+			data.npc=0;
 			data.gm=0;
 			data.pm=0;
 			data.ocf=0;
@@ -50,9 +53,6 @@ exports = module.exports = class FetchFinancial{
 				let value=hData[i].textContent.replace(/\,/g,'');
 				// 10k => 1m
 				value=value/100;
-				// 1m => 100m
-				if(idx>=14 && idx<=17)
-					value=value/100;
 				let d=data[i];
 				d[field]=value;
 			}		
@@ -81,41 +81,57 @@ exports = module.exports = class FetchFinancial{
 			let quater=str.substr(5,2)/3;
 			let period=year+'Q'+quater;
 			let d=initData(period);
+
+			// temp fields
+			d.gp=0;		//Gross profit
+			d.tax=0;	//tax
+
 			data.push(d);
 		}
 
-		fill('period',);
-		fill('sc',);
-			fill('ta',14);
-			fill('tl',16);
-			fill('ca',15);
-		fill('ivt',);
-		fill('tr',);
-		fill('dr',);
-		fill('adv',);
-			fill('cl',17);
-			fill('gr',4);
-		fill('cor',37);
-		fill('np',36);
-		data.np=data.np-data.cor;
-		data.roa=data.np/(data.ta+data.ta)/2;
+		// fill('sc',);
+		// fill('ta',14);
+		// fill('tl',16);
+		// fill('ca',15);
+		// fill('ivt',22);
+		// fill('tr',9);
+		// fill('dr',66);
+		// fill('adv',10);
+		// fill('cl',17);
+		// fill('gr',4);
 		fill('cor',8);
-		fill('gm',);
-		fill('pm',);
-			fill('ocf',12);
-		fill('icf',);
-		fill('fcf',);
-			fill('roe',19);
-		fill('roa',);
-		fill('cr',);
-		fill('atr',);
-		fill('ocfr',);
-		fill('er',);
+		// fill('np',);
+		// fill('npas',10);
+		// fill('npc',11);
+		// fill('gm',);
+		// fill('pm',);
+		// fill('ocf',12);
+		// fill('icf',);
+		// fill('fcf',);
+		// fill('roe',19);
+		// fill('roa',);
+		// fill('cr',);
+		// fill('atr',);
+		// fill('ocfr',);
+		// fill('er',);
 		// fill('ato',);
 		// fill('ito',);
-		fill('rto',);
-		data.ito=data.cor/(data.ivt+data.ivt)/2;
+		// fill('rto',);
 
+		fill('gp',36);
+		fill('tax',37);
+
+		for(let i=0;i<data.length;++i){
+			let d=data[i];
+			d.np=d.gp-d.tax;
+			if(i==data.length-1){
+				d.ito=d.cor/d.ivt;
+				d.roa=d.gp/d.ta;
+			}else{
+				d.ito=d.cor/(d.ivt+data[i+1].ivt)/2;
+				d.roa=d.gp/(d.ta+data[i+1].ta)/2;
+			}
+		}
 
 		//f10/zycwzb_000876.html
 		let pathname=window.location.pathname;
@@ -126,11 +142,14 @@ exports = module.exports = class FetchFinancial{
 	process(data){
 		if(data){
 			let code=data.code;
-			// this.createTable(code);
 			for(let d of data.data){
 				this.updateData(code,d);
-				break;
 			}
+			Logger.log('table '+this.tableofCode(code)+' updated');
+
+			// fetch from xjllb
+			const url='http://quotes.money.163.com/f10/xjllb_'+code+'.html';
+	        PageFetcher.fetch(url);
 		}
 		return data;
 	}
@@ -145,34 +164,36 @@ exports = module.exports = class FetchFinancial{
 	
 	updateData(code,data){
 		let sql='UPDATE '+this.tableofCode(code)+' SET '
-			+'sc='+data.sc+','
-			+'ta='+data.sc+','
-			+'tl='+data.sc+','
-			+'ca='+data.sc+','
-			+'ivt='+data.sc+','
-			+'tr='+data.sc+','
-			+'dr='+data.sc+','
-			+'adv='+data.sc+','
-			+'cl='+data.sc+','
-			+'gr='+data.sc+','
-			+'cor='+data.sc+','
-			+'np='+data.sc+','
-			+'gm='+data.sc+','
-			+'pm='+data.sc+','
-			+'ocf='+data.sc+','
-			+'icf='+data.sc+','
-			+'fcf='+data.sc+','
-			+'roe='+data.sc+','
-			+'roa='+data.sc+','
-			+'cr='+data.sc+','
-			+'atr='+data.sc+','
-			+'ocfr='+data.sc+','
-			+'er='+data.sc+','
-			+'ato='+data.sc+','
-			+'ito='+data.sc+','
-			+'rto='+data.sc
+			// +'sc='+data.sc+','
+			// +'ta='+data.ta+','
+			// +'tl='+data.tl+','
+			// +'ca='+data.ca+','
+			// +'ivt='+data.ivt+','
+			// +'tr='+data.tr+','
+			// +'ap='+data.ap+','
+			// +'dr='+data.dr+','
+			// +'adv='+data.adv+','
+			// +'cl='+data.cl+','
+			// +'gr='+data.gr+','
+			+'cor='+data.cor+','
+			+'np='+data.np+','
+			// +'npas='+data.npas+','
+			// +'npc='+data.npc+','
+			// +'gm='+data.gm+','
+			// +'pm='+data.pm+','
+			// +'ocf='+data.ocf+','
+			// +'icf='+data.icf+','
+			// +'fcf='+data.fcf+','
+			// +'roe='+data.roe+','
+			+'roa='+data.roa+','
+			// +'cr='+data.cr+','
+			// +'atr='+data.atr+','
+			// +'ocfr='+data.ocfr+','
+			// +'er='+data.er+','
+			// +'ato='+data.ato+','
+			+'ito='+data.ito+','
+			// +'rto='+data.rto
 			+' WHERE period='+data.period;
-		// Logger.log('update sql='+sql);
 		db.query(dbofCode(code),sql);
 	}
 }

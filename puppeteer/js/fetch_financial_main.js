@@ -18,12 +18,15 @@ exports = module.exports = class FetchFinancial{
 			data.ca=0;
 			data.ivt=0;
 			data.tr=0;
+			data.ap=0
 			data.dr=0;
 			data.adv=0;
 			data.cl=0;
 			data.gr=0;
 			data.cor=0;
 			data.np=0;
+			data.npas=0;
+			data.npc=0;
 			data.gm=0;
 			data.pm=0;
 			data.ocf=0;
@@ -49,7 +52,8 @@ exports = module.exports = class FetchFinancial{
 			for(let i=0;i<hData.length;++i){
 				let value=hData[i].textContent.replace(/\,/g,'');
 				// 10k => 1m
-				value=value/100;
+				if(idx!=19 && idx!=1)
+					value=value/100;
 				// 1m => 100m
 				if(idx>=14 && idx<=17)
 					value=value/100;
@@ -81,44 +85,56 @@ exports = module.exports = class FetchFinancial{
 			let quater=str.substr(5,2)/3;
 			let period=year+'Q'+quater;
 			let d=initData(period);
+
+			// temp used
+			data.eps=0;
+
 			data.push(d);
 		}
 
-		fill('period',);
-		fill('sc',1);
+		// fill('sc',);
 		fill('ta',14);
 		fill('tl',16);
 		fill('ca',15);
-		fill('ivt',);
-		fill('tr',);
-		fill('dr',);
-		fill('adv',);
+		// fill('ivt',);
+		// fill('tr',);
+		// fill('dr',);
+		// fill('adv',);
 		fill('cl',17);
 		fill('gr',4);
-		fill('cor',);
+		// fill('cor',);
+		// fill('np',);
 		fill('npas',10);
 		fill('npc',11);
-		fill('gm',);
+		// fill('gm',);
 		// fill('pm',);
 		fill('ocf',12);
-		fill('icf',);
-		fill('fcf',);
+		// fill('icf',);
+		// fill('fcf',);
 		fill('roe',19);
-		fill('roa',);
+		// fill('roa',);
 		// fill('cr',);
 		// fill('atr',);
-		//fill('ocfr',);
+		// fill('ocfr',);
 		// fill('er',);
 		// fill('ato',);
 		// fill('ito',);
-		//fill('rto',);
+		// fill('rto',);
 
-		data.sc=data.npas/data.sc;
-		data.cr=data.ca/data.cl;
-		data.er=data.tl/(data.ta-data.tl);
-		data.pm=data.np/data.gr;
-		data.ato=data.gr/(data.ta+data.ta)/2;
-		data.ocfr=data.ocf/data.cl;
+		fill('eps',1);
+
+		for(let i=0;i<data.length;++i){
+			let d=data[i];
+			d.sc=d.npas/d.eps;
+			d.cr=d.ca/d.cl;
+			d.er=d.tl/(d.ta-d.tl);
+			d.pm=d.np/d.gr;
+			d.ocfr=d.ocf/d.cl;
+			if(i==data.length-1)
+				d.ato=d.gr/d.ta;
+			else
+				d.ato=d.gr/(d.ta+data[i+1].ta)/2;
+		}
 
 		//f10/zycwzb_000876.html
 		let pathname=window.location.pathname;
@@ -132,8 +148,12 @@ exports = module.exports = class FetchFinancial{
 			this.createTable(code);
 			for(let d of data.data){
 				this.insertData(code,d);
-				break;
 			}
+			Logger.log('table '+this.tableofCode(code)+' created');
+
+			// fetch from zcfzb
+			const url='http://quotes.money.163.com/f10/zcfzb_'+code+'.html';
+	        PageFetcher.fetch(url);
 		}
 		return data;
 	}
@@ -155,12 +175,15 @@ exports = module.exports = class FetchFinancial{
 			ca, \
 			ivt, \
 			tr, \
+			ap, \
 			dr, \
 			adv, \
 			cl, \
 			gr, \
 			cor, \
 			np, \
+			npas, \
+			npc, \
 			gm, \
 			pm, \
 			ocf, \
@@ -183,12 +206,15 @@ exports = module.exports = class FetchFinancial{
 			+data.ca+','
 			+data.ivt+','
 			+data.tr+','
+			+data.ap+','
 			+data.dr+','
 			+data.adv+','
 			+data.cl+','
 			+data.gr+','
 			+data.cor+','
 			+data.np+','
+			+data.npas+','
+			+data.npc+','
 			+data.gm+','
 			+data.pm+','
 			+data.ocf+','
@@ -204,43 +230,9 @@ exports = module.exports = class FetchFinancial{
 			+data.ito+','
 			+data.rto+')'
 		;
-		// Logger.log('insert sql='+sql);
 		db.query(dbofCode(code),sql);
 	}
 	
-	updateData(code,data){
-		let sql='UPDATE '+this.tableofCode(code)+' SET '
-			+'sc='+data.sc+','
-			+'ta='+data.sc+','
-			+'tl='+data.sc+','
-			+'ca='+data.sc+','
-			+'ivt='+data.sc+','
-			+'tr='+data.sc+','
-			+'dr='+data.sc+','
-			+'adv='+data.sc+','
-			+'cl='+data.sc+','
-			+'gr='+data.sc+','
-			+'cor='+data.sc+','
-			+'np='+data.sc+','
-			+'gm='+data.sc+','
-			+'pm='+data.sc+','
-			+'ocf='+data.sc+','
-			+'icf='+data.sc+','
-			+'fcf='+data.sc+','
-			+'roe='+data.sc+','
-			+'roa='+data.sc+','
-			+'cr='+data.sc+','
-			+'atr='+data.sc+','
-			+'ocfr='+data.sc+','
-			+'er='+data.sc+','
-			+'ato='+data.sc+','
-			+'ito='+data.sc+','
-			+'rto='+data.sc
-			+' WHERE period='+data.period;
-		// Logger.log('update sql='+sql);
-		db.query(dbofCode(code),sql);
-	}
-
 	createTable(code){
 		let sql='CREATE TABLE '+this.tableofCode(code)+' ( \
 		    period character varying(6) primary key, \
@@ -250,12 +242,15 @@ exports = module.exports = class FetchFinancial{
 		    ca decimal(8,2), \
 		    ivt decimal(8,2), \
 		    tr decimal(8,2), \
+		    ap decimal(8,2), \
 		    dr decimal(8,2), \
 		    adv decimal(8,2), \
 		    cl decimal(8,2), \
 		    gr decimal(9,2), \
 		    cor decimal(8,2), \
 		    np decimal(8,2), \
+		    npas decimal(8,2), \
+		    npc decimal(8,2), \
 		    gm decimal(5,2), \
 		    pm decimal(5,2), \
 		    ocf decimal(8,2), \
@@ -271,7 +266,6 @@ exports = module.exports = class FetchFinancial{
 		    ito decimal(5,2), \
 		    rto decimal(5,2) \
 		)';
-		Logger.log('table '+this.tableofCode(code)+' created, sql='+sql);
 		db.query(dbofCode(code),sql);
 
 		/*
@@ -298,16 +292,16 @@ exports = module.exports = class FetchFinancial{
 		投资现金流	Investment Cash Flow	ICF
 		筹资现金流	Financial Cash Flow	FCF
 		(%)
-		// 毛利率	Gross Margin	GM
-		// 净利率	Profit Margin	PM
+		//毛利率	Gross Margin	GM
+		净利率	Profit Margin	PM
 		净资产收益率	Return on Equity	ROE
 		总资产收益率	Return on Assets	ROA
 		流动比率	CurrentRatio	CR
 		速动比率	Acid-test-Ratio	ATR
-		//现金流量比率	Operating Cash Flow Ratio	OCFR
+		现金流量比率	Operating Cash Flow Ratio	OCFR
 		产权比率	Equity Ratio	ER
-		//总资产周转率	Total Asset Turnover	ATO
-		//存货周转率	Inventory TurnOver	ITO
+		总资产周转率	Total Asset Turnover	ATO
+		存货周转率	Inventory TurnOver	ITO
 		//应收账周转率	Receivable TurnOver	RTO
 		*/
 	}
