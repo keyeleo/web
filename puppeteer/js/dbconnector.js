@@ -22,22 +22,22 @@ exports = module.exports = class Postgres{
 				var client = new pg.Client(conString);
 				client.on('end',()=>{
 					this.dbs[db]=null;
-			    	Logger.log('PostgreSQL end');
+			    	Logger.log('PostgreSQL end: '+conString);
 				});
 				client.on('error',err=>{
 					this.dbs[db]=null;
-			    	Logger.log('PostgreSQL error: '+err);
+			    	Logger.log('PostgreSQL error: '+conString+': '+err);
 				});
 				await client.connect(function(err) {
 				    if(err)
-				    	Logger.error('PostgreSQL connect failed: ', err);
+				    	Logger.log('PostgreSQL connect failed: ', err);
 				    else{
 				    	client=null;
 				    }
 				});
 		    	this.dbs[db]=client;
 				this.connecting[db]=false;
-		    	Logger.log('PostgreSQL connected');
+		    	Logger.log('PostgreSQL connected: '+conString);
 			}
 		}
 		return this.dbs[db];
@@ -52,7 +52,7 @@ exports = module.exports = class Postgres{
 			}else{
 				if(func)
 					func(data);
-				// Logger.log('Query sql='+sql+', result='+JSON.stringify(data.rows)); 
+				// Logger.log('Query '+db+', sql='+sql+', result='+JSON.stringify(data.rows)); 
 			}
 		});
 	}

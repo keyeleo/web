@@ -1,5 +1,7 @@
 const Logger=require('./logger');
 const db=require('./dbconnector');
+const PageFetcher=require('./pagefetcher');
+const F10Utils=require('./fetch_financial');
 
 exports = module.exports = class FetchFinancial{
 
@@ -131,7 +133,7 @@ exports = module.exports = class FetchFinancial{
 			for(let d of data.data){
 				this.updateData(code,d);
 			}
-			Logger.log('table '+this.tableofCode(code)+' updated');
+			// Logger.log('table '+F10Utils.Code2.table(code)+' updated');
 
 			// fetch from lrb
 			const url='http://quotes.money.163.com/f10/lrb_'+code+'.html';
@@ -139,17 +141,9 @@ exports = module.exports = class FetchFinancial{
 		}
 		return data;
 	}
-
-	tableofCode(code){
-		return 'f10_'+code;
-	}
-
-	dbofCode(code){
-		return 'f10_'+(code/1000<600)?'sz':'sh';
-	}
 	
 	updateData(code,data){
-		let sql='UPDATE '+this.tableofCode(code)+' SET '
+		let sql='UPDATE '+F10Utils.Code2.table(code)+' SET '
 			// +'sc='+data.sc+','
 			// +'ta='+data.ta+','
 			// +'tl='+data.tl+','
@@ -173,13 +167,13 @@ exports = module.exports = class FetchFinancial{
 			// +'roe='+data.roe+','
 			// +'roa='+data.roa+','
 			// +'cr='+data.cr+','
-			+'atr='+data.atr+','
+			+'atr='+data.atr
 			// +'ocfr='+data.ocfr+','
 			// +'er='+data.er+','
 			// +'ato='+data.ato+','
 			// +'ito='+data.ito+','
 			// +'rto='+data.rto
-			+' WHERE period='+data.period;
-		db.query(dbofCode(code),sql);
+			+' WHERE period=\''+data.period+'\'';
+		db.query(F10Utils.Code2.db(code),sql);
 	}
 }

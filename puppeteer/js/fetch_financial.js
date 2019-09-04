@@ -45,3 +45,13 @@ exports = module.exports = class FetchFinancialTrigger{
 		}
 	}
 }
+
+exports.Code2=class _Utils{
+	static table(code){
+		return 'f10_'+code;
+	}
+
+	static db(code){
+		return 'f10_'+((code/1000<600)?'sz':'sh');
+	}
+}

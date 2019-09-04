@@ -1,5 +1,7 @@
 const Logger=require('./logger');
 const db=require('./dbconnector');
+const PageFetcher=require('./pagefetcher');
+const F10Utils=require('./fetch_financial');
 
 exports = module.exports = class FetchFinancial{
 
@@ -149,7 +151,6 @@ exports = module.exports = class FetchFinancial{
 			for(let d of data.data){
 				this.insertData(code,d);
 			}
-			Logger.log('table '+this.tableofCode(code)+' created');
 
 			// fetch from zcfzb
 			const url='http://quotes.money.163.com/f10/zcfzb_'+code+'.html';
@@ -158,16 +159,8 @@ exports = module.exports = class FetchFinancial{
 		return data;
 	}
 
-	tableofCode(code){
-		return 'f10_'+code;
-	}
-
-	dbofCode(code){
-		return 'f10_'+(code/1000<600)?'sz':'sh';
-	}
-
 	insertData(code,data){
-		let sql='INSERT INTO '+this.tableofCode(code)+' ( \
+		let sql='INSERT INTO '+F10Utils.Code2.table(code)+' ( \
 			period, \
 			sc, \
 			ta, \
@@ -230,11 +223,11 @@ exports = module.exports = class FetchFinancial{
 			+data.ito+','
 			+data.rto+')'
 		;
-		db.query(dbofCode(code),sql);
+		db.query(F10Utils.Code2.db(code),sql);
 	}
 	
 	createTable(code){
-		let sql='CREATE TABLE '+this.tableofCode(code)+' ( \
+		let sql='CREATE TABLE '+F10Utils.Code2.table(code)+' ( \
 		    period character varying(6) primary key, \
 		    sc integer, \
 		    ta decimal(8,2), \
@@ -266,7 +259,8 @@ exports = module.exports = class FetchFinancial{
 		    ito decimal(5,2), \
 		    rto decimal(5,2) \
 		)';
-		db.query(dbofCode(code),sql);
+		db.query(F10Utils.Code2.db(code),sql);
+		Logger.log('table '+F10Utils.Code2.table(code)+' created');
 
 		/*
 		总股本	Share Capital	SC
