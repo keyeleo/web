@@ -56,7 +56,8 @@ exports = module.exports = class FetchFinancial{
 				// 10k => 1m
 				value=value/100;
 				let d=data[i];
-				d[field]=value;
+				if(value)
+					d[field]=value;
 			}		
 		}
 	
@@ -127,11 +128,17 @@ exports = module.exports = class FetchFinancial{
 			let d=data[i];
 			d.np=d.gp-d.tax;
 			if(i==data.length-1){
-				d.ito=d.cor/d.ivt;
-				d.roa=d.gp/d.ta;
+				if(d.ivt!=0)
+					d.ito=d.cor/d.ivt;
+				if(d.ta!=0)
+					d.roa=d.gp/d.ta;
 			}else{
-				d.ito=d.cor/(d.ivt+data[i+1].ivt)/2;
-				d.roa=d.gp/(d.ta+data[i+1].ta)/2;
+				let avgivt=(d.ivt+data[i+1].ivt)/2;
+				let avgta=(d.ta+data[i+1].ta)/2;
+				if(avgivt!=0)
+					d.ito=d.cor/avgivt;
+				if(avgta!=0)
+					d.roa=d.gp/avgta;
 			}
 		}
 
@@ -146,8 +153,9 @@ exports = module.exports = class FetchFinancial{
 			let code=data.code;
 			for(let d of data.data){
 				this.updateData(code,d);
+				break;
 			}
-			// Logger.log('table '+F10Utils.Code2.table(code)+' updated');
+			Logger.log('table '+F10Utils.Code2.table(code)+' updated');
 
 			// fetch from xjllb
 			const url='http://quotes.money.163.com/f10/xjllb_'+code+'.html';

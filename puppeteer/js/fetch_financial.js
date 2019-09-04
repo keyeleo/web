@@ -42,6 +42,7 @@ exports = module.exports = class FetchFinancialTrigger{
 		for(let code of codes){
 			const url='http://quotes.money.163.com/f10/zycwzb_'+code+'.html';
 	        await PageFetcher.fetch(url);
+	        break;
 		}
 	}
 }

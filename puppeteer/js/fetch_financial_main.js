@@ -60,7 +60,8 @@ exports = module.exports = class FetchFinancial{
 				if(idx>=14 && idx<=17)
 					value=value/100;
 				let d=data[i];
-				d[field]=value;
+				if(value)
+					d[field]=value;
 			}		
 		}
 	
@@ -127,15 +128,24 @@ exports = module.exports = class FetchFinancial{
 
 		for(let i=0;i<data.length;++i){
 			let d=data[i];
-			d.sc=d.npas/d.eps;
-			d.cr=d.ca/d.cl;
-			d.er=d.tl/(d.ta-d.tl);
-			d.pm=d.np/d.gr;
-			d.ocfr=d.ocf/d.cl;
-			if(i==data.length-1)
-				d.ato=d.gr/d.ta;
-			else
-				d.ato=d.gr/(d.ta+data[i+1].ta)/2;
+			if(d.eps!=0)
+				d.sc=d.npas/d.eps;
+			if(d.cl!=0)
+				d.cr=d.ca/d.cl;
+			if(d.ta!=d.tl)
+				d.er=d.tl/(d.ta-d.tl);
+			if(d.gr!=0)
+				d.pm=d.np/d.gr;
+			if(d.cl!=0)
+				d.ocfr=d.ocf/d.cl;
+			if(i==data.length-1){
+				if(d.ta!=0)
+					d.ato=d.gr/d.ta;
+			}else{
+				let avgta=(d.ta+data[i+1].ta)/2;
+				if(avgta!=0)
+					d.ato=d.gr/avgta;
+			}
 		}
 
 		//f10/zycwzb_000876.html
@@ -150,6 +160,7 @@ exports = module.exports = class FetchFinancial{
 			this.createTable(code);
 			for(let d of data.data){
 				this.insertData(code,d);
+				break;
 			}
 
 			// fetch from zcfzb

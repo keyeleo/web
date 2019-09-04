@@ -56,7 +56,8 @@ exports = module.exports = class FetchFinancial{
 				// 10k => 1m
 				value=value/100;
 				let d=data[i];
-				d[field]=value;
+				if(value)
+					d[field]=value;
 			}		
 		}
 	
@@ -126,8 +127,9 @@ exports = module.exports = class FetchFinancial{
 			let code=data.code;
 			for(let d of data.data){
 				this.updateData(code,d);
+				break;
 			}
-			// Logger.log('table '+F10Utils.Code2.table(code)+' updated');
+			Logger.log('table '+F10Utils.Code2.table(code)+' updated');
 		}
 		return data;
 	}
