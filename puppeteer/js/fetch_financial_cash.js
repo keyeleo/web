@@ -122,16 +122,17 @@ exports = module.exports = class FetchFinancial{
 		return {'code':code, 'data':data};
 	}
 
-	process(data){
-		if(data){
-			let code=data.code;
-			for(let d of data.data){
+	process(Data){
+		if(Data){
+			let code=Data.code;
+			let data=Data.data;
+
+			for(let d of data){
 				this.updateData(code,d);
-				break;
 			}
 			Logger.log('table '+F10Utils.Code2.table(code)+' updated');
 		}
-		return data;
+		return Data;
 	}
 	
 	updateData(code,data){

@@ -117,24 +117,25 @@ exports = module.exports = class FetchFinancial{
 		// fill('ito',);
 		// fill('rto',);
 
-		for(let i=0;i<data.length;++i){
-			let d=data[i];
-			if(d.cl!=0)
-				d.atr=(d.ca-d.ivt)/d.cl;
-		}
-
 		//f10/zycwzb_000876.html
 		let pathname=window.location.pathname;
 		let code=pathname.substr(pathname.indexOf('_')+1,6);
 		return {'code':code, 'data':data};
 	}
 
-	process(data){
-		if(data){
-			let code=data.code;
-			for(let d of data.data){
+	process(Data){
+		if(Data){
+			let code=Data.code;
+			let data=Data.data;
+
+			for(let i=0;i<data.length;++i){
+				let d=data[i];
+				if(d.cl!=0)
+					d.atr=(d.ca-d.ivt)/d.cl;
+			}
+
+			for(let d of data){
 				this.updateData(code,d);
-				break;
 			}
 			Logger.log('table '+F10Utils.Code2.table(code)+' updated');
 
@@ -142,7 +143,7 @@ exports = module.exports = class FetchFinancial{
 			const url='http://quotes.money.163.com/f10/lrb_'+code+'.html';
 	        PageFetcher.fetch(url);
 		}
-		return data;
+		return Data;
 	}
 	
 	updateData(code,data){

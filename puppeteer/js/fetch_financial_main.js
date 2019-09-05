@@ -57,7 +57,7 @@ exports = module.exports = class FetchFinancial{
 				if(idx!=19 && idx!=1)
 					value=value/100;
 				// 1m => 100m
-				if(idx>=14 && idx<=17)
+				if(idx>=14 && idx<=18)
 					value=value/100;
 				let d=data[i];
 				if(value)
@@ -91,6 +91,9 @@ exports = module.exports = class FetchFinancial{
 
 			// temp used
 			data.eps=0;
+			data.eas=0;	//Equity Attributable to ShareHolders
+			data.gp=0;	//Gross profit
+
 
 			data.push(d);
 		}
@@ -125,26 +128,8 @@ exports = module.exports = class FetchFinancial{
 		// fill('rto',);
 
 		fill('eps',1);
-
-		for(let i=0;i<data.length;++i){
-			let d=data[i];
-			if(d.eps!=0)
-				d.sc=d.npas/d.eps;
-			if(d.cl!=0)
-				d.cr=d.ca/d.cl;
-			if(d.ta!=d.tl)
-				d.er=d.tl/(d.ta-d.tl);
-			if(d.cl!=0)
-				d.ocfr=d.ocf/d.cl;
-			if(i==data.length-1){
-				if(d.ta!=0)
-					d.ato=d.gr/d.ta;
-			}else{
-				let avgta=(d.ta+data[i+1].ta)/2;
-				if(avgta!=0)
-					d.ato=d.gr/avgta;
-			}
-		}
+		fill('eas',18);
+		fill('gp',9);
 
 		//f10/zycwzb_000876.html
 		let pathname=window.location.pathname;
@@ -152,20 +137,45 @@ exports = module.exports = class FetchFinancial{
 		return {'code':code, 'data':data};
 	}
 
-	process(data){
-		if(data){
-			let code=data.code;
+	process(Data){
+		if(Data){
+			let code=Data.code;
+			let data=Data.data;
+
+			for(let i=0;i<data.length;++i){
+				let d=data[i];
+				if(d.eps!=0)
+					d.sc=d.npas/d.eps;
+				if(d.cl!=0)
+					d.cr=d.ca/d.cl;
+				if(d.ta!=d.tl)
+					d.er=d.tl*100/d.eas;
+				if(d.cl!=0)
+					d.ocfr=d.ocf/d.cl;
+				if(i==data.length-1){
+					if(d.ta!=0){
+						d.roa=d.gp/d.ta;
+						d.ato=d.gr/d.ta;
+					}
+				}else{
+					let avgta=(d.ta+data[i+1].ta)/2;
+					if(avgta!=0){
+						d.roa=d.gp/avgta;
+						d.ato=d.gr/avgta;
+					}
+				}
+			}
+
 			this.createTable(code);
-			for(let d of data.data){
+			for(let d of data){
 				this.insertData(code,d);
-				break;
 			}
 
 			// fetch from zcfzb
 			const url='http://quotes.money.163.com/f10/zcfzb_'+code+'.html';
 	        PageFetcher.fetch(url);
 		}
-		return data;
+		return Data;
 	}
 
 	insertData(code,data){

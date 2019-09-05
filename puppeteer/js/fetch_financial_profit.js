@@ -84,10 +84,6 @@ exports = module.exports = class FetchFinancial{
 			let quater=str.substr(5,2)/3;
 			let period=year+'Q'+quater;
 			let d=initData(period);
-
-			// temp fields
-			d.gp=0;		//Gross profit
-
 			data.push(d);
 		}
 
@@ -120,39 +116,33 @@ exports = module.exports = class FetchFinancial{
 		// fill('ito',);
 		// fill('rto',);
 
-		fill('gp',37);
-
-		for(let i=0;i<data.length;++i){
-			let d=data[i];
-			if(d.gr!=0)
-				d.pm=d.np/d.gr;
-			if(i==data.length-1){
-				if(d.ivt!=0)
-					d.ito=d.cor/d.ivt;
-				if(d.ta!=0)
-					d.roa=d.gp/d.ta;
-			}else{
-				let avgivt=(d.ivt+data[i+1].ivt)/2;
-				let avgta=(d.ta+data[i+1].ta)/2;
-				if(avgivt!=0)
-					d.ito=d.cor/avgivt;
-				if(avgta!=0)
-					d.roa=d.gp/avgta;
-			}
-		}
-
 		//f10/zycwzb_000876.html
 		let pathname=window.location.pathname;
 		let code=pathname.substr(pathname.indexOf('_')+1,6);
 		return {'code':code, 'data':data};
 	}
 
-	process(data){
-		if(data){
-			let code=data.code;
-			for(let d of data.data){
+	process(Data){
+		if(Data){
+			let code=Data.code;
+			let data=Data.data;
+
+			for(let i=0;i<data.length;++i){
+				let d=data[i];
+				if(d.gr!=0)
+					d.pm=d.np/d.gr*100;
+				if(i==data.length-1){
+					if(d.ivt!=0)
+						d.ito=d.cor/d.ivt;
+				}else{
+					let avgivt=(d.ivt+data[i+1].ivt)/2;
+					if(avgivt!=0)
+						d.ito=d.cor/avgivt;
+				}
+			}
+
+			for(let d of data){
 				this.updateData(code,d);
-				break;
 			}
 			Logger.log('table '+F10Utils.Code2.table(code)+' updated');
 
@@ -160,7 +150,7 @@ exports = module.exports = class FetchFinancial{
 			const url='http://quotes.money.163.com/f10/xjllb_'+code+'.html';
 	        PageFetcher.fetch(url);
 		}
-		return data;
+		return Data;
 	}
 	
 	updateData(code,data){
@@ -186,7 +176,7 @@ exports = module.exports = class FetchFinancial{
 			// +'icf='+data.icf+','
 			// +'fcf='+data.fcf+','
 			// +'roe='+data.roe+','
-			+'roa='+data.roa+','
+			// +'roa='+data.roa+','
 			// +'cr='+data.cr+','
 			// +'atr='+data.atr+','
 			// +'ocfr='+data.ocfr+','
