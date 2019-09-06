@@ -4,8 +4,8 @@ const db=require('./dbconnector');
 exports = module.exports = class FetchStockList{
 
 	constructor(){
-		// Done
-		// this.page='quote.eastmoney.com/stock_list';
+		// http://www.quote.eastmoney.com/stock_list.html
+		this.page='quote.eastmoney.com/stock_list';
 	}
 
 	fetch(bodyHandle){
@@ -52,6 +52,21 @@ exports = module.exports = class FetchStockList{
 
 	async process(data){
 		if(data){
+			//exchange: sz/sh; grade: A-D; level: 0-9, market value
+			let sql='CREATE TABLE summary ( \
+			    id character varying(6) primary key, \
+			    name character varying(10), \
+			    addr character varying(6), \
+			    type integer, \
+			    ipo timestamp(6) without time zone, \
+			    exchange character varying(4), \
+			    grade character varying(1), \
+			    level integer, \
+			    status integer \
+			)';
+			await db.query('stocks',sql);
+			Logger.log('table summary created');
+
 			// let sql='INSERT INTO stock_list (code,name) VALUES(\'%s\',\'%s\')';
 			for(let ex in data){
 				let stockList=data[ex];

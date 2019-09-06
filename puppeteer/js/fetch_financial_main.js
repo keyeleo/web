@@ -253,34 +253,34 @@ exports = module.exports = class FetchFinancial{
 		let sql='CREATE TABLE '+F10Utils.Code2.table(code)+' ( \
 		    period character varying(6) primary key, \
 		    sc integer, \
-		    ta decimal(8,2), \
-		    tl decimal(8,2), \
-		    ca decimal(8,2), \
-		    ivt decimal(8,2), \
-		    tr decimal(8,2), \
-		    ap decimal(8,2), \
-		    dr decimal(8,2), \
-		    adv decimal(8,2), \
-		    cl decimal(8,2), \
-		    gr decimal(9,2), \
-		    cor decimal(8,2), \
-		    np decimal(8,2), \
-		    npas decimal(8,2), \
-		    npc decimal(8,2), \
-		    gm decimal(5,2), \
-		    pm decimal(5,2), \
-		    ocf decimal(8,2), \
-		    icf decimal(8,2), \
-		    fcf decimal(8,2), \
-		    roe decimal(5,2), \
-		    roa decimal(5,2), \
-		    cr decimal(5,2), \
-		    atr decimal(5,2), \
-		    ocfr decimal(5,2), \
-		    er decimal(6,2), \
-		    ato decimal(5,2), \
-		    ito decimal(5,2), \
-		    rto decimal(5,2) \
+		    ta decimal(10,2), \
+		    tl decimal(10,2), \
+		    ca decimal(10,2), \
+		    ivt decimal(10,2), \
+		    tr decimal(10,2), \
+		    ap decimal(10,2), \
+		    dr decimal(10,2), \
+		    adv decimal(10,2), \
+		    cl decimal(10,2), \
+		    gr decimal(12,2), \
+		    cor decimal(10,2), \
+		    np decimal(10,2), \
+		    npas decimal(10,2), \
+		    npc decimal(10,2), \
+		    gm decimal(7,2), \
+		    pm decimal(7,2), \
+		    ocf decimal(10,2), \
+		    icf decimal(10,2), \
+		    fcf decimal(10,2), \
+		    roe decimal(7,2), \
+		    roa decimal(7,2), \
+		    cr decimal(7,2), \
+		    atr decimal(7,2), \
+		    ocfr decimal(7,2), \
+		    er decimal(8,2), \
+		    ato decimal(7,2), \
+		    ito decimal(7,2), \
+		    rto decimal(7,2) \
 		)';
 		db.query(F10Utils.Code2.db(code),sql);
 		Logger.log('table '+F10Utils.Code2.table(code)+' created');
