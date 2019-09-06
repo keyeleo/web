@@ -43,11 +43,15 @@ class PageFetcher{
       this.browser.close();
   }
 
-  async doFetch(url){
-    if(this.browser==null){
+  static async fetch(url){
+    if(!this.instance){
+      this.instance=new PageFetcher();
+    }
+
+    if(this.instance.browser==null){
       // connect to browser
-      this.browser = await puppeteer.launch({
-        executablePath: this.chromePath,
+      this.instance.browser = await puppeteer.launch({
+        executablePath: this.instance.chromePath,
           args: [
               '--no-sandbox',
               '--disable-setuid-sandbox'
@@ -64,36 +68,29 @@ class PageFetcher{
       url='http://'+url;
 
     // open page
-    const page = await this.browser.newPage();
+    const page = await this.instance.browser.newPage();
     await page.goto(url);
 
     // fetch & process
     var result='fetcher not found';
     const bodyHandle = await page.$('body');
     if(bodyHandle){
-      for(let i=0,ii=this.fetchers.length;i<ii;++i){
-        let fetcher=this.fetchers[i];
-        if(url.indexOf(fetcher.page)!=-1){
+      for(let i=0,ii=this.instance.fetchers.length;i<ii;++i){
+        let fetcher=this.instance.fetchers[i];
+        if(fetcher.page && fetcher.page.length>0 && url.indexOf(fetcher.page)!=-1){
+          if(fetcher.prepare)
+            await fetcher.prepare(page);
           //page.evaluate 方法运行在页面内部，并返回Promise到外部
           result = await page.evaluate(fetcher.fetch, bodyHandle);
           if(fetcher.process)
-            result=fetcher.process(result);
+            result=await fetcher.process(result);
           break;
         }
       }
       await bodyHandle.dispose();
     }
 
-    // await page.screenshot({path: imagePath});
-    Logger.log('fetch page: '+url+', dataPath: '+dataPath+', imagePath: '+imagePath);
     return result;
-  }
-
-  static async fetch(url){
-    if(!this.instance){
-      this.instance=new PageFetcher();
-    }
-    return this.instance.doFetch(url);
   }
 }
 

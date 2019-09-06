@@ -50,7 +50,7 @@ exports = module.exports = class FetchStockList{
 		return data;
 	}
 
-	process(data){
+	async process(data){
 		if(data){
 			// let sql='INSERT INTO stock_list (code,name) VALUES(\'%s\',\'%s\')';
 			for(let ex in data){

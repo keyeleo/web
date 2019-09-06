@@ -43,27 +43,14 @@ exports = module.exports = class Postgres{
 		return this.dbs[db];
 	}
 
-	async doQuery(db, sql, func){
-		let con=await this.connect(db);
-
-		await con.query(sql, function(err, data) {
-			if(err) {
-				Logger.log('Query failed, sql='+err);
-			}else{
-				if(func)
-					func(data);
-				Logger.log('Query '+db+', sql='+sql+', result='+JSON.stringify(data.rows)); 
-			}
-		});
-	}
-
 	destroy(db){
 		if(this.dbs[db])this.dbs[db].end();
 	}
 
-	static query(db, sql, func){
+	static async query(db, sql){
 		if(!this.instance)
 			this.instance=new Postgres();
-		this.instance.doQuery(db, sql, func);
+		let con=await this.instance.connect(db);
+		return await con.query(sql);
 	}
 }

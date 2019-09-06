@@ -5,43 +5,41 @@ const PageFetcher=require('./pagefetcher');
 exports = module.exports = class FetchFinancialTrigger{
 
 	constructor(){
-		// this.page='http://stockpage.10jqka.com.cn/000876/finance/';
-		this.page='www.baidu.com';
+		// this.page='http://quotes.money.163.com/stock';
+		this.page='http://quotes.money.163.com/stock';
 	}
 
 	fetch(bodyHandle){
 		return {'result':'Start fetching finanical'};
 	}
 
-	process(data){
-		this.processList(['000876']);
-		return data;
-		if(data){
-			let sql='SELECT id FROM summary WHERE id<\'001000\' OR id>\'300000\' AND id<\'300100\' LIMIT 2';
-			db.query('stocks',sql,(data)=>{
-				let ids=[];
-				for(let row of data.rows){
-					ids.push(row.id);
-				}
-				//async process list
-				this.processList(ids);
-			});
+	async process(data){
+		// //test
+		// let dd={'rows':[{'id':'000876'}]};
+		// this.processList(dd);
+		// return 'process 000876';
 
-			sql='SELECT id FROM summary WHERE id>\'600000\' AND id<\'604000\' LIMIT 2';
-			db.query('stocks',sql,(data)=>{
-				let ids=[];
-				for(let row of data.rows){
-					ids.push(row.id);
-				}
-				//async process list
-				this.processList(ids);
-			});
-		}
+		let sql='SELECT id FROM summary WHERE id<\'001000\' OR id>\'300000\' AND id<\'300100\' LIMIT 2';
+		let res=await db.query('stocks',sql);
+		data={'sz': res.rows.length};
+		//async process list
+		this.processList(res);
+
+		sql='SELECT id FROM summary WHERE id>\'600000\' AND id<\'604000\' LIMIT 2';
+		res=await db.query('stocks',sql);
+		data.sh=res.rows.length;
+		//async process list
+		this.processList(res);
+
 		return data;
 	}
 
-	async processList(codes){
-		for(let code of codes){
+	async processList(data){
+		let ids=[];
+		for(let row of data.rows){
+			ids.push(row.id);
+		}
+		for(let code of ids){
 			const url='http://quotes.money.163.com/f10/zycwzb_'+code+'.html';
 	        await PageFetcher.fetch(url);
 		}

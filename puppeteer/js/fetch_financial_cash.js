@@ -122,10 +122,13 @@ exports = module.exports = class FetchFinancial{
 		return {'code':code, 'data':data};
 	}
 
-	process(Data){
+	async process(Data){
 		if(Data){
 			let code=Data.code;
 			let data=Data.data;
+			if(!code || !data)
+				// error
+				return Data;
 
 			for(let d of data){
 				this.updateData(code,d);
