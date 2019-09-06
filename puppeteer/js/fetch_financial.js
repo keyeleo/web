@@ -19,13 +19,13 @@ exports = module.exports = class FetchFinancialTrigger{
 		// this.processList(dd);
 		// return 'process 000876';
 
-		let sql='SELECT id FROM summary WHERE id<\'001000\' OR id>\'300000\' AND id<\'300100\'';
+		let sql='SELECT id FROM summary WHERE id<\'001000\' OR id>\'300000\' AND id<\'300100\' ORDER BY id';
 		let res=await db.query('stocks',sql);
 		data={'sz': res.rows.length};
 		//async process list
 		this.processList(res);
 
-		sql='SELECT id FROM summary WHERE id>\'600000\' AND id<\'604000\'';
+		sql='SELECT id FROM summary WHERE id>\'600000\' AND id<\'604000\' ORDER BY id';
 		res=await db.query('stocks',sql);
 		data.sh=res.rows.length;
 		//async process list
@@ -52,6 +52,7 @@ exports.Code2=class _Utils{
 	}
 
 	static db(code){
-		return 'f10_'+((code/1000<600)?'sz':'sh');
+		return 'f10';
+		// return 'f10_'+((code/1000<600)?'sz':'sh');
 	}
 }

@@ -149,11 +149,11 @@ exports = module.exports = class FetchFinancial{
 			for(let d of data){
 				this.updateData(code,d);
 			}
-			Logger.log('table '+F10Utils.Code2.table(code)+' updated');
+			//Logger.log('table '+F10Utils.Code2.table(code)+' updated');
 
 			// fetch from xjllb
 			const url='http://quotes.money.163.com/f10/xjllb_'+code+'.html';
-	        PageFetcher.fetch(url);
+	        await PageFetcher.fetch(url);
 		}
 		return Data;
 	}

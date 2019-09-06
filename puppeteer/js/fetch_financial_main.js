@@ -89,6 +89,8 @@ exports = module.exports = class FetchFinancial{
 			let year=str.substr(0,4);
 			let quater=str.substr(5,2)/3;
 			let period=year+'Q'+quater;
+			if(period.length!=6)
+				continue;
 			let d=initData(period);
 
 			// temp used
@@ -177,7 +179,7 @@ exports = module.exports = class FetchFinancial{
 
 			// fetch from zcfzb
 			const url='http://quotes.money.163.com/f10/zcfzb_'+code+'.html';
-	        PageFetcher.fetch(url);
+	        await PageFetcher.fetch(url);
 		}
 		return Data;
 	}
