@@ -28,16 +28,16 @@ exports = module.exports = class Postgres{
 					this.dbs[db]=null;
 			    	Logger.log('PostgreSQL error: '+conString+': '+err);
 				});
-				await client.connect(function(err) {
-				    if(err)
-				    	Logger.log('PostgreSQL connect failed: ', err);
-				    else{
-				    	client=null;
-				    }
+				await client.connect().catch(e=>{
+					client=null;
+		    		Logger.log('PostgreSQL connected error: '+e+', host='+conString);
 				});
-		    	this.dbs[db]=client;
-				this.connecting[db]=false;
-		    	Logger.log('PostgreSQL connected: '+conString);
+
+				if(client){
+			    	this.dbs[db]=client;
+					this.connecting[db]=false;
+			    	Logger.log('PostgreSQL connected: '+conString);
+				}
 			}
 		}
 		return this.dbs[db];
@@ -51,6 +51,11 @@ exports = module.exports = class Postgres{
 		if(!this.instance)
 			this.instance=new Postgres();
 		let con=await this.instance.connect(db);
-		return await con.query(sql);
+		if(con){
+			return await con.query(sql).catch(function(e){
+			    Logger.log('PostgreSQL query exception: '+e+', sql:'+sql);
+			});
+		}else
+			return 'PostgreSQL disconnected';
 	}
 }

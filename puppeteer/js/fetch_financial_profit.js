@@ -53,6 +53,8 @@ exports = module.exports = class FetchFinancial{
 				return;
 			for(let i=0;i<hData.length;++i){
 				let value=hData[i].textContent.replace(/\,/g,'');
+				if(value=='--')
+					continue;
 				// 10k => 1m
 				value=value/100;
 				let d=data[i];

@@ -53,6 +53,8 @@ exports = module.exports = class FetchFinancial{
 				return;
 			for(let i=0;i<hData.length;++i){
 				let value=hData[i].textContent.replace(/\,/g,'');
+				if(value=='--')
+					continue;
 				// 10k => 1m
 				if(idx!=19 && idx!=1)
 					value=value/100;
@@ -90,10 +92,9 @@ exports = module.exports = class FetchFinancial{
 			let d=initData(period);
 
 			// temp used
-			data.eps=0;
-			data.eas=0;	//Equity Attributable to ShareHolders
-			data.gp=0;	//Gross profit
-
+			d.eps=0;
+			d.eas=0;	//Equity Attributable to ShareHolders
+			d.gp=0;	//Gross profit
 
 			data.push(d);
 		}
@@ -276,7 +277,7 @@ exports = module.exports = class FetchFinancial{
 		    cr decimal(5,2), \
 		    atr decimal(5,2), \
 		    ocfr decimal(5,2), \
-		    er decimal(5,2), \
+		    er decimal(6,2), \
 		    ato decimal(5,2), \
 		    ito decimal(5,2), \
 		    rto decimal(5,2) \
