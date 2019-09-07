@@ -18,7 +18,9 @@ exports = module.exports = class Postgres{
 				await this.sleep(10);
 			if(!this.dbs[db]){
 				this.connecting[db]=true;
-				var conString = "postgres://vic:liu@code.biad.com.cn:39008/"+db;
+				var conString = "postgres://vic:liu@172.16.50.41:39008/"+db;
+				// var conString = "postgres://vic:liu@192.168.10.221:39008/"+db;
+				// var conString = "postgres://vic:liu@code.biad.com.cn:39008/"+db;
 				var client = new pg.Client(conString);
 				client.on('end',()=>{
 					this.dbs[db]=null;
@@ -52,6 +54,7 @@ exports = module.exports = class Postgres{
 			this.instance=new Postgres();
 		let con=await this.instance.connect(db);
 		if(con){
+			// will return 'undefined' if query failed
 			return await con.query(sql).catch(function(e){
 			    Logger.log('PostgreSQL query exception: '+e+', sql:'+sql);
 			});

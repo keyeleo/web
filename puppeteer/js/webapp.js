@@ -17,7 +17,6 @@ exports = module.exports = function run(port){
         if(url==null)
             res.end('no url set(url=http://website)');
         const PageFetcher=require('./pagefetcher');
-        Logger.log( 'originalUrl: '+req.originalUrl+', query.url: '+url );
         const result=await PageFetcher.fetch(url);
 
         res.send(result);

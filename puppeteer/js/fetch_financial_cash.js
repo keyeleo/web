@@ -135,7 +135,10 @@ exports = module.exports = class FetchFinancial{
 			for(let d of data){
 				this.updateData(code,d);
 			}
+
 			Logger.log('table '+F10Utils.Code2.table(code)+' updated');
+			let sql='UPDATE summary SET status=1 WHERE id=\''+code+'\'';
+			db.query('stocks',sql);
 		}
 		return Data;
 	}

@@ -6,14 +6,17 @@ const Logger=require('./logger');
 class PageFetcher{
   constructor(){
     //remove these when release
-    delete require.cache[require.resolve('./dbconnector')];
-    delete require.cache[require.resolve('./fetch_stock_list')];
-    delete require.cache[require.resolve('./fetch_financial')];
-    delete require.cache[require.resolve('./fetch_financial_main')];
-    delete require.cache[require.resolve('./fetch_financial_balance')];
-    delete require.cache[require.resolve('./fetch_financial_cash')];
-    delete require.cache[require.resolve('./fetch_financial_profit')];
-
+    this.caching=true;
+    if(!this.caching){
+      delete require.cache[require.resolve('./dbconnector')];
+      delete require.cache[require.resolve('./fetch_stock_list')];
+      delete require.cache[require.resolve('./fetch_financial')];
+      delete require.cache[require.resolve('./fetch_financial_main')];
+      delete require.cache[require.resolve('./fetch_financial_balance')];
+      delete require.cache[require.resolve('./fetch_financial_cash')];
+      delete require.cache[require.resolve('./fetch_financial_profit')];    
+    }
+  
     // browser path
     this.browser=null;
     this.chromePath = (os.type()=='Linux')?
@@ -60,7 +63,6 @@ class PageFetcher{
     }
 
     const dataPath=(os.type()=='Linux')? '/data/': '';
-    const imagePath=dataPath+'screenshot.png';
   
     // fix url
     const prefix='http';
@@ -68,8 +70,14 @@ class PageFetcher{
       url='http://'+url;
 
     // open page
+    Logger.log('Open page '+url);
     const page = await this.instance.browser.newPage();
-    await page.goto(url);
+    await page.goto(url,{
+      timeout: 0,
+      waitUntil: 'load'
+    }).catch(e=>{
+      Logger.log('Open page '+url+' error: '+e);
+    });
 
     // fetch & process
     var result='fetcher not found';
@@ -81,7 +89,9 @@ class PageFetcher{
           if(fetcher.prepare)
             await fetcher.prepare(page);
           //page.evaluate 方法运行在页面内部，并返回Promise到外部
-          result = await page.evaluate(fetcher.fetch, bodyHandle);
+          result = await page.evaluate(fetcher.fetch, bodyHandle).catch(e=>{
+            Logger.log('Evaluate '+url+' error: '+e);
+          });
           if(fetcher.process)
             result=await fetcher.process(result);
           break;

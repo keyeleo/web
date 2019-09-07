@@ -172,9 +172,11 @@ exports = module.exports = class FetchFinancial{
 				}
 			}
 
-			this.createTable(code);
-			for(let d of data){
-				this.insertData(code,d);
+			let res=await this.createTable(code);
+			if(res){
+				for(let d of data){
+					await this.insertData(code,d);
+				}
 			}
 
 			// fetch from zcfzb
@@ -184,7 +186,7 @@ exports = module.exports = class FetchFinancial{
 		return Data;
 	}
 
-	insertData(code,data){
+	async insertData(code,data){
 		let sql='INSERT INTO '+F10Utils.Code2.table(code)+' ( \
 			period, \
 			sc, \
@@ -248,10 +250,10 @@ exports = module.exports = class FetchFinancial{
 			+data.ito+','
 			+data.rto+')'
 		;
-		db.query(F10Utils.Code2.db(code),sql);
+		await db.query(F10Utils.Code2.db(code),sql);
 	}
 	
-	createTable(code){
+	async createTable(code){
 		let sql='CREATE TABLE '+F10Utils.Code2.table(code)+' ( \
 		    period character varying(6) primary key, \
 		    sc integer, \
@@ -284,8 +286,10 @@ exports = module.exports = class FetchFinancial{
 		    ito decimal(7,2), \
 		    rto decimal(7,2) \
 		)';
-		db.query(F10Utils.Code2.db(code),sql);
-		Logger.log('table '+F10Utils.Code2.table(code)+' created');
+		let res=await db.query(F10Utils.Code2.db(code),sql);
+		if(res)
+			Logger.log('table '+F10Utils.Code2.table(code)+' created');
+		return res;
 
 		/*
 		总股本	Share Capital	SC
