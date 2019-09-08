@@ -41,6 +41,22 @@ class PageFetcher{
     }
   }
 
+  async launch(){
+    // connect to browser
+    if(this.browser==null){
+      // connect to browser
+      this.browser = await puppeteer.launch({
+        executablePath: this.chromePath,
+          args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-software-rasterizer',
+              '--disable-gpu'
+          ]
+      });
+    }
+  }
+
   destroy(){
     if(this.browser)
       this.browser.close();
@@ -49,17 +65,6 @@ class PageFetcher{
   static async fetch(url){
     if(!this.instance){
       this.instance=new PageFetcher();
-    }
-
-    if(this.instance.browser==null){
-      // connect to browser
-      this.instance.browser = await puppeteer.launch({
-        executablePath: this.instance.chromePath,
-          args: [
-              '--no-sandbox',
-              '--disable-setuid-sandbox'
-          ]
-      });
     }
 
     const dataPath=(os.type()=='Linux')? '/data/': '';
@@ -71,7 +76,18 @@ class PageFetcher{
 
     // open page
     Logger.log('Open page '+url);
-    const page = await this.instance.browser.newPage();
+    let page=null;
+    let retry=3;
+    while(--retry>0 && !page){
+        await this.instance.launch();
+        page = await this.instance.browser.newPage().catch(e=>{
+          Logger.log('New page '+url+' error: '+e);
+          this.instance.browser=null;
+        });
+    }
+    if(!page)
+      return 'Error: browser error';
+
     await page.goto(url,{
       timeout: 0,
       waitUntil: 'load'
@@ -80,7 +96,7 @@ class PageFetcher{
     });
 
     // fetch & process
-    var result='fetcher not found';
+    var result='Error: fetcher not found';
     const bodyHandle = await page.$('body');
     if(bodyHandle){
       for(let i=0,ii=this.instance.fetchers.length;i<ii;++i){

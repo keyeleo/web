@@ -26,7 +26,7 @@ exports = module.exports = class FetchFinancialTrigger{
 			let res=await db.query('stocks',sql);
 
 			let ids=[];
-			const parallel=1;
+			const parallel=4;
 			const bundle=1+res.rows.length/parallel;
 			for(let i=0,ii=res.rows.length;i<ii;++i){
 				ids.push(res.rows[i].id);
