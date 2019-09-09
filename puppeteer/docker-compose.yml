@@ -12,6 +12,7 @@ services:
     volumes:
       - ./data/postgres/data:/var/lib/postgresql/data/
       - ./data/postgres/run:/run/postgresql
+      - ./:/data
   puppeteer:
     image: hexxa/puppeteer-alpine
     ports:

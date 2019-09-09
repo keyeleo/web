@@ -115,6 +115,7 @@ class PageFetcher{
       }
       await bodyHandle.dispose();
     }
+    await page.close();
 
     return result;
   }
