@@ -63,23 +63,26 @@ exports = module.exports = class FetchFinancial{
 			}		
 		}
 	
+		//f10/zycwzb_000876.html
+		let pathname=window.location.pathname;
+		let code=pathname.substr(pathname.indexOf('_')+1,6);
 		var data=[];
 
 		let tbodySelector='#scrollTable > div.col_r > table > tbody';
 		let hTable=bodyHandle.querySelector(tbodySelector);
 		if(!hTable)
-			return '.tbody not found when fetch reports';
+			return {'code':code, 'error':'.tbody not found when fetch xjllb'};
 		let hRows=hTable.querySelectorAll('tr');
 		if(!hRows)
-			return '<tr> not found when fetch rows';
+			return {'code':code, 'error':'<tr> not found when fetch rows'};
 		if(hRows.length<=0)
-			return 'data not found when fetch head';
+			return {'code':code, 'error':'data not found when fetch head'};
 
 		// parse head
 		let hHead=hRows[0];
 		let hPeriods=hHead.querySelectorAll('th');
 		if(!hPeriods)
-			return '<th> not found when fetch period';
+			return {'code':code, 'error':'<th> not found when fetch period'};
 		for(let hPeriod of hPeriods){
 			let str=hPeriod.textContent;
 			let year=str.substr(0,4);
@@ -118,28 +121,27 @@ exports = module.exports = class FetchFinancial{
 		// fill('ito',);
 		// fill('rto',);	--
 
-		//f10/zycwzb_000876.html
-		let pathname=window.location.pathname;
-		let code=pathname.substr(pathname.indexOf('_')+1,6);
 		return {'code':code, 'data':data};
 	}
 
 	async process(Data){
 		if(Data){
+			let status=2;	//delisted
 			let code=Data.code;
 			let data=Data.data;
-			if(!code || !data)
-				// error
-				return Data;
-
-			for(let d of data){
-				this.updateData(code,d);
+			if(code && data){
+				for(let d of data){
+					this.updateData(code,d);
+				}
+				Logger.log('table '+F10Utils.Code2.table(code)+' updated');
+				status=1;	//fetched
+			}else{
+				Logger.log('table '+F10Utils.Code2.table(code)+' delisted');
 			}
-
-			Logger.log('table '+F10Utils.Code2.table(code)+' updated');
-			let sql='UPDATE summary SET status=1 WHERE id=\''+code+'\'';
+			let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
 			db.query('stocks',sql);
 		}
+
 		return Data;
 	}
 	

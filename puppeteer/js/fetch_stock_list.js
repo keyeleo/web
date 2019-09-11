@@ -6,6 +6,7 @@ exports = module.exports = class FetchStockList{
 	constructor(){
 		// http://quote.eastmoney.com/stock_list.html
 		this.page='quote.eastmoney.com/stock_list';
+		db.destroy();
 	}
 
 	fetch(bodyHandle){
@@ -56,7 +57,7 @@ exports = module.exports = class FetchStockList{
 			exchange: sz/sh
 			grade: A-D
 			level: 0-9, market value
-			status: 0(initialized), 1(fetched), 2(terminated), 3(normal), 4(passed), 5(selected)
+			status: 0(initialized), 1(fetched), 2(delisted), 3(normal), 4(passed), 5(selected)
 			*/
 			let sql='CREATE TABLE summary ( \
 			    id character varying(6) primary key, \

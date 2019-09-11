@@ -8,7 +8,7 @@ exports = module.exports = class FetchFinancialTrigger{
 		// this.page='http://quotes.money.163.com/stock';
 		// this.page='quotes.money.163.com/stock';
 		this.page='www.baidu.com';
-		this.stocks=[];
+		db.destroy();
 	}
 
 	fetch(bodyHandle){
@@ -20,25 +20,24 @@ exports = module.exports = class FetchFinancialTrigger{
 		// this.processList(['000876']);
 		// return 'process 000876';
 
-		if(this.stocks.length<=0){
-			let sql='SELECT id FROM summary WHERE (status IS NULL OR status<1) AND \
+		let sql='SELECT id FROM summary WHERE (status IS NULL OR status<1) AND \
 (id<\'001000\' OR id>\'300000\' AND id<\'300100\' OR id>\'600000\' AND id<\'604000\') ORDER BY id';
-			let res=await db.query('stocks',sql);
+		let res=await db.query('stocks',sql);
 
-			let ids=[];
-			const parallel=4;
-			const bundle=1+res.rows.length/parallel;
-			for(let i=0,ii=res.rows.length;i<ii;++i){
-				ids.push(res.rows[i].id);
-				if(ids.length>=bundle || i==ii-1){
-					this.stocks.push(ids);
-					ids=[];
-				}
-			}		
-		}
+		let stocks=[];
+		let ids=[];
+		const parallel=4;
+		const bundle=1+res.rows.length/parallel;
+		for(let i=0,ii=res.rows.length;i<ii;++i){
+			ids.push(res.rows[i].id);
+			if(ids.length>=bundle || i==ii-1){
+				stocks.push(ids);
+				ids=[];
+			}
+		}		
 
 		let count=0;
-		for(let ids of this.stocks){
+		for(let ids of stocks){
 			//async process list
 			this.processList(ids);
 			count+=ids.length;

@@ -9,6 +9,7 @@ exports = module.exports = function run(port){
         res.end( 'hello puppeteer!' );
     })
 
+    // usage: 'http://127.0.0.1/open?url=http://www.baidu.com'
     app.get('/open', async function (req, res) {
         if(req.query.reload)
             delete require.cache[require.resolve('./pagefetcher')];

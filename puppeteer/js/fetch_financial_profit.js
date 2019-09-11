@@ -6,7 +6,7 @@ const F10Utils=require('./fetch_financial');
 exports = module.exports = class FetchFinancial{
 
 	constructor(){
-		//http://quotes.money.163.com/f10/zycwzb_000876.html
+		//http://quotes.money.163.com/f10/lrb_000876.html
 		this.page='quotes.money.163.com/f10/lrb';
 	}
 
@@ -63,23 +63,26 @@ exports = module.exports = class FetchFinancial{
 			}		
 		}
 	
+		//f10/zycwzb_000876.html
+		let pathname=window.location.pathname;
+		let code=pathname.substr(pathname.indexOf('_')+1,6);
 		var data=[];
 
 		let tbodySelector='#scrollTable > div.col_r > table > tbody';
 		let hTable=bodyHandle.querySelector(tbodySelector);
 		if(!hTable)
-			return '.tbody not found when fetch reports';
+			return {'code':code, 'error':'.tbody not found when fetch lrb'};
 		let hRows=hTable.querySelectorAll('tr');
 		if(!hRows)
-			return '<tr> not found when fetch rows';
+			return {'code':code, 'error':'<tr> not found when fetch rows'};
 		if(hRows.length<=0)
-			return 'data not found when fetch head';
+			return {'code':code, 'error':'data not found when fetch head'};
 
 		// parse head
 		let hHead=hRows[0];
 		let hPeriods=hHead.querySelectorAll('th');
 		if(!hPeriods)
-			return '<th> not found when fetch period';
+			return {'code':code, 'error':'<th> not found when fetch period'};
 		for(let hPeriod of hPeriods){
 			let str=hPeriod.textContent;
 			let year=str.substr(0,4);
@@ -118,9 +121,6 @@ exports = module.exports = class FetchFinancial{
 		// fill('ito',);
 		// fill('rto',);
 
-		//f10/zycwzb_000876.html
-		let pathname=window.location.pathname;
-		let code=pathname.substr(pathname.indexOf('_')+1,6);
 		return {'code':code, 'data':data};
 	}
 
@@ -128,29 +128,29 @@ exports = module.exports = class FetchFinancial{
 		if(Data){
 			let code=Data.code;
 			let data=Data.data;
-			if(!code || !data)
-				// error
-				return Data;
-
-			for(let i=0;i<data.length;++i){
-				let d=data[i];
-				if(d.gr!=0)
-					d.pm=d.np/d.gr*100;
-				if(i==data.length-1){
-					if(d.ivt!=0)
-						d.ito=d.cor/d.ivt;
-				}else{
-					let avgivt=(d.ivt+data[i+1].ivt)/2;
-					if(avgivt!=0)
-						d.ito=d.cor/avgivt;
+			if(code && data){
+				for(let i=0;i<data.length;++i){
+					let d=data[i];
+					if(d.gr!=0){
+						d.pm=d.np/d.gr*100;
+						if(d.pm>99999)d.pm=99999;
+						if(d.pm<-99999)d.pm=-99999;
+					}
+					if(i==data.length-1){
+						if(d.ivt!=0)
+							d.ito=d.cor/d.ivt;
+					}else{
+						let avgivt=(d.ivt+data[i+1].ivt)/2;
+						if(avgivt!=0)
+							d.ito=d.cor/avgivt;
+					}
 				}
-			}
 
-			for(let d of data){
-				this.updateData(code,d);
+				for(let d of data){
+					this.updateData(code,d);
+				}
+				//Logger.log('table '+F10Utils.Code2.table(code)+' updated');
 			}
-			//Logger.log('table '+F10Utils.Code2.table(code)+' updated');
-
 			// fetch from xjllb
 			const url='http://quotes.money.163.com/f10/xjllb_'+code+'.html';
 	        await PageFetcher.fetch(url);

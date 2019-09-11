@@ -67,23 +67,26 @@ exports = module.exports = class FetchFinancial{
 			}		
 		}
 	
+		//f10/zycwzb_000876.html
+		let pathname=window.location.pathname;
+		let code=pathname.substr(pathname.indexOf('_')+1,6);
 		var data=[];
 
 		let tbodySelector='#scrollTable > div.col_r > table > tbody';
 		let hTable=bodyHandle.querySelector(tbodySelector);
 		if(!hTable)
-			return '.tbody not found when fetch reports';
+			return {'code':code, 'error':'.tbody not found when fetch zycwzb'};
 		let hRows=hTable.querySelectorAll('tr');
 		if(!hRows)
-			return '<tr> not found when fetch rows';
+			return {'code':code, 'error':'<tr> not found when fetch rows'};
 		if(hRows.length<=0)
-			return 'data not found when fetch head';
+			return {'code':code, 'error':'data not found when fetch head'};
 
 		// parse head
 		let hHead=hRows[0];
 		let hPeriods=hHead.querySelectorAll('th');
 		if(!hPeriods)
-			return '<th> not found when fetch period';
+			return {'code':code, 'error':'<th> not found when fetch period'};
 		for(let hPeriod of hPeriods){
 			let str=hPeriod.textContent;
 			let year=str.substr(0,4);
@@ -134,9 +137,6 @@ exports = module.exports = class FetchFinancial{
 		fill('eas',18);
 		fill('gp',9);
 
-		//f10/zycwzb_000876.html
-		let pathname=window.location.pathname;
-		let code=pathname.substr(pathname.indexOf('_')+1,6);
 		return {'code':code, 'data':data};
 	}
 
@@ -144,41 +144,46 @@ exports = module.exports = class FetchFinancial{
 		if(Data){
 			let code=Data.code;
 			let data=Data.data;
-			if(!code || !data)
-				// error
-				return Data;
-
-			for(let i=0;i<data.length;++i){
-				let d=data[i];
-				if(d.eps!=0)
-					d.sc=d.npas/d.eps;
-				if(d.cl!=0)
-					d.cr=d.ca/d.cl;
-				if(d.ta!=d.tl)
-					d.er=d.tl*100/d.eas;
-				if(d.cl!=0)
-					d.ocfr=d.ocf/d.cl;
-				if(i==data.length-1){
-					if(d.ta!=0){
-						d.roa=d.gp/d.ta;
-						d.ato=d.gr/d.ta;
+			if(code && data){
+				for(let i=0;i<data.length;++i){
+					let d=data[i];
+					if(d.eps!=0)
+						d.sc=d.npas/d.eps;
+					if(d.cl!=0)
+						d.cr=d.ca/d.cl;
+					if(d.eas!=0){
+						d.er=d.tl*100/d.eas;
+						if(d.er>999999)d.er=999999;
+						if(d.er<-999999)d.er=-999999;
 					}
-				}else{
-					let avgta=(d.ta+data[i+1].ta)/2;
-					if(avgta!=0){
-						d.roa=d.gp/avgta;
-						d.ato=d.gr/avgta;
+					if(d.cl!=0){
+						d.ocfr=d.ocf/d.cl;
+						if(d.ocfr>99999)d.ocfr=99999;
+						if(d.ocfr<-99999)d.ocfr=-99999;
+					}
+					if(i==data.length-1){
+						if(d.ta!=0){
+							d.roa=d.gp/d.ta;
+							d.ato=d.gr/d.ta;
+						}
+					}else{
+						let avgta=(d.ta+data[i+1].ta)/2;
+						if(avgta!=0){
+							d.roa=d.gp/avgta;
+							d.ato=d.gr/avgta;
+						}
+					}
+					if(d.ato>99999)d.ato=99999;
+					if(d.ato<-99999)d.ato=-99999;
+				}
+
+				let res=await this.createTable(code);
+				if(res){
+					for(let d of data){
+						await this.insertData(code,d);
 					}
 				}
 			}
-
-			let res=await this.createTable(code);
-			if(res){
-				for(let d of data){
-					await this.insertData(code,d);
-				}
-			}
-
 			// fetch from zcfzb
 			const url='http://quotes.money.163.com/f10/zcfzb_'+code+'.html';
 	        await PageFetcher.fetch(url);
