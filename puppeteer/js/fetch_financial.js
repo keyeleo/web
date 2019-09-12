@@ -6,8 +6,8 @@ exports = module.exports = class FetchFinancialTrigger{
 
 	constructor(){
 		// this.page='http://quotes.money.163.com/stock';
-		// this.page='quotes.money.163.com/stock';
-		this.page='www.baidu.com';
+		this.page='quotes.money.163.com/stock';
+		// this.page='www.baidu.com';
 		db.destroy();
 	}
 

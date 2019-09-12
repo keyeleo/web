@@ -13,6 +13,10 @@ exports = module.exports = class Logger{
 			            filename: "/data/logs/goldspider",
 			            pattern: "yyyy-MM-dd.log",
 			            alwaysIncludePattern: true,
+			            layout: {
+							type: 'pattern',
+							pattern: '[T%d{ABSOLUTE}] %p %c %m%n',
+						}
 			        },
 			    },
 			    categories: { default: { appenders: ["log_file"], level: "debug" } }

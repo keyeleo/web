@@ -173,6 +173,8 @@ exports = module.exports = class FetchFinancial{
 							d.ato=d.gr/avgta;
 						}
 					}
+					if(d.roa>99999)d.roa=99999;
+					if(d.roa<-99999)d.roa=-99999;
 					if(d.ato>99999)d.ato=99999;
 					if(d.ato<-99999)d.ato=-99999;
 				}
