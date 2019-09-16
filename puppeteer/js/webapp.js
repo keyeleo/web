@@ -5,6 +5,9 @@ exports = module.exports = function run(port){
 
     const app = express();
 
+    // static resources path, like 'index.html'
+    app.use(express.static('/data/www'));
+
     app.get('/test', function (req, res) {
         res.end( 'hello puppeteer!' );
     })
