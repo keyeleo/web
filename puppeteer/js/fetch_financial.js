@@ -20,6 +20,9 @@ exports = module.exports = class FetchFinancialTrigger{
 		// this.processList(['000876']);
 		// return 'process 000876';
 
+		// 沪A: sh600xxx, sh601xxx, sh603xxx
+		// 深A: sz000xxx
+		// 创业: sz300xxx
 		let sql='SELECT id FROM summary WHERE (status IS NULL OR status<1) AND \
 (id<\'001000\' OR id>\'300000\' AND id<\'300100\' OR id>\'600000\' AND id<\'604000\') ORDER BY id';
 		let res=await db.query('stocks',sql);
