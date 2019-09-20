@@ -19,7 +19,8 @@ exports = module.exports = class Postgres{
 			if(!this.dbs[db]){
 				this.connecting[db]=true;
 				// var conString = "postgres://vic:liu@172.16.50.41:39008/"+db;
-				var conString = "postgres://vic:liu@192.168.31.226:39008/"+db;
+				// var conString = "postgres://vic:liu@192.168.31.226:39008/"+db;
+				var conString = "postgres://vic:liu@192.168.10.137:39008/"+db;
 				// var conString = "postgres://vic:liu@code.biad.com.cn:39008/"+db;
 				var client = new pg.Client(conString);
 				client.on('end',()=>{

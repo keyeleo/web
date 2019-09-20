@@ -8,11 +8,11 @@ exports = module.exports = function run(port){
     // static resources path, like 'index.html'
     app.use(express.static('/data/www'));
 
-    app.get('/test', function (req, res) {
-        res.end( 'hello puppeteer!' );
+    app.get('/echo/*', function (req, res) {
+        res.end(req.path);
     })
 
-    // usage: 'http://127.0.0.1/open?url=http://www.baidu.com'
+    // usage: 'http://127.0.0.1/open?url=http://127.0.0.1/echo/path'
     app.get('/open', async function (req, res) {
         if(req.query.reload)
             delete require.cache[require.resolve('./pagefetcher')];
