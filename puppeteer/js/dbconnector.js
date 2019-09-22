@@ -13,15 +13,18 @@ exports = module.exports = class Postgres{
 	}
 
 	async connect(db){
+		if(!process.env.POSTGRES_HOST || !process.env.POSTGRES_USER || !process.env.POSTGRES_PASSWORD){
+			Logger.log('Please pass env: POSTGRES_HOST, POSTGRES_USER and POSTGRES_PASSWORD');
+			return null;
+		}
+
 		if(!this.dbs[db]){
 			while(this.connecting[db])
 				await this.sleep(10);
 			if(!this.dbs[db]){
 				this.connecting[db]=true;
-				// var conString = "postgres://vic:liu@172.16.50.41:39008/"+db;
-				// var conString = "postgres://vic:liu@192.168.31.226:39008/"+db;
-				var conString = "postgres://vic:liu@192.168.10.137:39008/"+db;
-				// var conString = "postgres://vic:liu@code.biad.com.cn:39008/"+db;
+				var conString = 'postgres://'+process.env.POSTGRES_USER+':'+process.env.POSTGRES_PASSWORD
+					+'@'+process.env.POSTGRES_HOST+'/'+db;
 				var client = new pg.Client(conString);
 				client.on('end',()=>{
 					this.dbs[db]=null;

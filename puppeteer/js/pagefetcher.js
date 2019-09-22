@@ -8,6 +8,7 @@ class PageFetcher{
     //remove these when release
     this.caching=true;
     if(!this.caching){
+      delete require.cache[require.resolve('./forward')];
       delete require.cache[require.resolve('./dbconnector')];
       delete require.cache[require.resolve('./fetch_stock_list')];
       delete require.cache[require.resolve('./fetch_financial')];
@@ -28,6 +29,7 @@ class PageFetcher{
     // fetchers factory
     this.fetchers=[];
     const packages=[
+      './forward',
       './fetch_stock_list',
       './fetch_financial',
       './fetch_financial_main',
