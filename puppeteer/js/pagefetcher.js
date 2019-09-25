@@ -5,17 +5,24 @@ const Logger=require('./logger');
 
 class PageFetcher{
   constructor(){
+    const packages=[
+      './forward',
+      './fetch_stock_list',
+      './fetch_financial',
+      './fetch_financial_main',
+      './fetch_financial_balance',
+      './fetch_financial_cash',
+      './fetch_financial_profit',
+
+      './fetch_p2p',
+    ];
+
     //remove these when release
     this.caching=true;
     if(!this.caching){
-      delete require.cache[require.resolve('./forward')];
       delete require.cache[require.resolve('./dbconnector')];
-      delete require.cache[require.resolve('./fetch_stock_list')];
-      delete require.cache[require.resolve('./fetch_financial')];
-      delete require.cache[require.resolve('./fetch_financial_main')];
-      delete require.cache[require.resolve('./fetch_financial_balance')];
-      delete require.cache[require.resolve('./fetch_financial_cash')];
-      delete require.cache[require.resolve('./fetch_financial_profit')];    
+      for(let package of packages)
+        delete require.cache[require.resolve(package)];
     }
   
     // browser path
@@ -28,18 +35,9 @@ class PageFetcher{
 
     // fetchers factory
     this.fetchers=[];
-    const packages=[
-      './forward',
-      './fetch_stock_list',
-      './fetch_financial',
-      './fetch_financial_main',
-      './fetch_financial_balance',
-      './fetch_financial_cash',
-      './fetch_financial_profit',
-    ];
     for(let i=0,ii=packages.length;i<ii;++i){
         const Fetcher=require(packages[i]);
-      this.fetchers.push(new Fetcher());
+      this.fetchers.push(new Fetcher(this));
     }
   }
 
