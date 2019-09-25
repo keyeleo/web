@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"que",
+				"querySelector"
+			],
+			[
 				"OL",
 				"OL_inspectJsonConfig"
 			],
@@ -23,6 +27,32 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "/Users/vic/Documents/git/spring.cloud/Sectional/deploy/application.properties",
+			"settings":
+			{
+				"buffer_size": 283,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/vic/Documents/git/web/puppeteer/js/dbconnector.js",
+			"settings":
+			{
+				"buffer_size": 1777,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/vic/Documents/git/web/puppeteer/js/fetch_financial.js",
+			"settings":
+			{
+				"buffer_size": 1505,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -56,10 +86,41 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/vic/Documents/git/web/puppeteer"
+		"/Users/vic/Documents/git/web/puppeteer",
+		"/Users/vic/Documents/git/web/puppeteer/js",
+		"/Users/vic/Documents/git/spring.cloud/Sectional/deploy"
 	],
 	"file_history":
 	[
+		"/Users/vic/Documents/git/spring.cloud/Sectional/deploy/docker-compose.yml",
+		"/Users/vic/Documents/git/spring.cloud/Sectional/deploy/run.sh",
+		"/Users/vic/Documents/git/spring.cloud/Sectional/deploy/application.properties",
+		"/Users/vic/Documents/git/spring.cloud/Sectional/resources/js/show.js",
+		"/Users/vic/Documents/git/spring.cloud/Sectional/resources/index.html",
+		"/Users/vic/Documents/git/web/puppeteer/js/fetch_financial.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/fetch_financial_main.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/dbconnector.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/pagefetcher.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/webapp.js",
+		"/Users/vic/Documents/git/spring.cloud/Sectional/target/classes/resources/index.html",
+		"/Users/vic/Documents/git/spring.cloud/Sectional/target/classes/resources/js/show.js",
+		"/Users/vic/Documents/git/deploy/sectional/docker-compose.yml",
+		"/Users/vic/Documents/git/deploy/goldspider/application.properties",
+		"/Users/vic/Documents/git/deploy/goldspider/run.sh",
+		"/Users/vic/Documents/git/deploy/goldspider/docker-compose.yml",
+		"/Users/vic/Documents/git/deploy/goldspider/docker-compose copy.yml",
+		"/Users/vic/Documents/git/spring.cloud/Sectional/referenc.sql",
+		"/Users/vic/Documents/git/web/puppeteer/js/fetch_financial_cash.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/fetch_financial_profit.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/fetch_financial_balance.js",
+		"/Users/vic/Documents/git/web/puppeteer/docker-compose.yml",
+		"/Users/vic/Documents/git/web/puppeteer/js/fetch_financial_t.js",
+		"/Users/vic/Desktop/load_table_data_pc.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/datafetcher.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/fetch_financial_reports.js",
+		"/Users/vic/Desktop/load_table_data_pc",
+		"/Users/vic/Documents/git/web/puppeteer/js/fetch_stock_list.js",
+		"/Users/vic/Documents/git/web/puppeteer/js/urlgenerator.js",
 		"/Users/vic/Documents/project/web/puppeteer/js/urlgenerator.js",
 		"/Users/vic/Documents/project/web/puppeteer/js/datafetcher.js",
 		"/Users/vic/Documents/project/web/puppeteer/index.js",
@@ -158,14 +219,7 @@
 		"/Users/vic/Documents/project/UnrealEngine/Engine/Plugins/Animation/LiveLink/LiveLink.uplugin",
 		"/Users/vic/Documents/project/UnrealEngine/Engine/Source/ThirdParty/Distorm/Distorm.build.cs",
 		"/Users/vic/Documents/project/UnrealEngine/Engine/Plugins/Animation/LiveLink/Binaries/Mac/UE4Editor.modules",
-		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/SetupMono.sh",
-		"/Users/vic/Documents/project/UnrealEngine/Engine/Build/BatchFiles/GetMSBuildPath.bat",
-		"/Users/vic/Documents/project/UnrealEngine/Engine/Build/BatchFiles/Mac/SymbolicateOSXCrashLog.py",
-		"/Users/vic/Documents/project/UnrealEngine/Engine/Build/BatchFiles/Mac/Build.sh",
-		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/FixDependencyFiles.sh",
-		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/RunMono.sh",
-		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/GitDependencies.sh",
-		"/Users/vic/Documents/project/ue4-iotree/Setup.sh"
+		"/Users/vic/Documents/project/ue4-iotree/Engine/Build/BatchFiles/Mac/SetupMono.sh"
 	],
 	"find":
 	{
@@ -184,6 +238,35 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"\\",
+			"addPageButton",
+			"600",
+			"quater",
+			" \\",
+			"addAnchor",
+			"createCell",
+			".er",
+			"addAnchor",
+			"createCell",
+			"grid",
+			"createGrid",
+			"url",
+			"href",
+			"url",
+			"ocf",
+			"q4",
+			".ocfr",
+			".gp",
+			".np",
+			"np",
+			"co r",
+			"ocfr",
+			"'f10_'+exchangeofCode",
+			"exchangeofCode",
+			"query",
+			"sql",
+			"dataurl",
+			"delete",
 			"address",
 			"listen"
 		],
@@ -193,6 +276,13 @@
 		"regex": false,
 		"replace_history":
 		[
+			"",
+			"\\n \\",
+			"cell",
+			"createCell",
+			"npc",
+			"q2",
+			"dbofCode"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -203,8 +293,95 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "/Users/vic/Documents/git/spring.cloud/Sectional/deploy/application.properties",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 283,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								283,
+								283
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/JavaProperties.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Users/vic/Documents/git/web/puppeteer/js/dbconnector.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1777,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								572,
+								572
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/vic/Documents/git/web/puppeteer/js/fetch_financial.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1505,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -285,7 +462,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 209.0,
+	"side_bar_width": 221.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
