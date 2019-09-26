@@ -4,10 +4,29 @@ const PageFetcher=require('./pagefetcher');
 
 exports = module.exports = class FetchFinancialTrigger{
 
-	constructor(){
+	constructor(pageFetcher){
 		// http://127.0.0.1/echo/financial;
 		this.page='echo/financial';
 		db.destroy();
+
+		const packages=[
+			'./financial/financial_main',
+			'./financial/financial_balance',
+			'./financial/financial_cash',
+			'./financial/financial_profit',
+		];
+
+		this.caching=true;
+		if(!this.caching){
+			for(let pkg of packages)
+				delete require.cache[require.resolve(pkg)];
+		}
+
+		// add sub-fetchers
+		for(let pkg of packages){
+			const Fetcher=require(pkg);
+			pageFetcher.fetchers.push(new Fetcher());
+		}
 	}
 
 	fetch(bodyHandle){

@@ -1,7 +1,7 @@
-const Logger=require('./../logger');
-const db=require('./../dbconnector');
-const PageFetcher=require('./../pagefetcher');
-const F10Utils=require('./../fetch_p2p');
+const Logger=require('../logger');
+const db=require('../dbconnector');
+const PageFetcher=require('../pagefetcher');
+const F10Utils=require('../fetch_p2p');
 
 exports = module.exports = class FetchJiMu{
 

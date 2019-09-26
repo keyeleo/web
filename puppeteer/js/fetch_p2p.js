@@ -15,14 +15,14 @@ exports = module.exports = class FetchP2PTrigger{
 
 		this.caching=true;
 		if(!this.caching){
-			for(let package of packages)
-				delete require.cache[require.resolve(package)];
+			for(let pkg of packages)
+				delete require.cache[require.resolve(pkg)];
 		}
 
 		// add sub-fetchers
 		this.fetchers=[];
-		for(let package of packages){
-			const Fetcher=require(packages[i]);
+		for(let pkg of packages){
+			const Fetcher=require(pkg);
 			let fetcher=new Fetcher(pageFetcher);
 			this.fetchers.push(fetcher);
 			pageFetcher.fetchers.push(fetcher);
@@ -38,7 +38,7 @@ exports = module.exports = class FetchP2PTrigger{
 		    m24 decimal(4,2), \
 		    m36 decimal(4,2) \
 		)';
-		await db.query('p2p',sql);
+		db.query('p2p',sql);
 	}
 
 	fetch(bodyHandle){

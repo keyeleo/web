@@ -6,23 +6,17 @@ const Logger=require('./logger');
 class PageFetcher{
   constructor(){
     const packages=[
-      './forward',
       './fetch_stock_list',
       './fetch_financial',
-      './fetch_financial_main',
-      './fetch_financial_balance',
-      './fetch_financial_cash',
-      './fetch_financial_profit',
-
-      './fetch_p2p',
+      './fetch_p2p'
     ];
 
     //remove these when release
     this.caching=true;
     if(!this.caching){
       delete require.cache[require.resolve('./dbconnector')];
-      for(let package of packages)
-        delete require.cache[require.resolve(package)];
+      for(let pkg of packages)
+        delete require.cache[require.resolve(pkg)];
     }
   
     // browser path
