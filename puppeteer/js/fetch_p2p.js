@@ -11,6 +11,12 @@ exports = module.exports = class P2PFetcher{
 
 		const packages=[
 			'./p2p/p2p_jimu',
+			'./p2p/p2p_eloan',
+			'./p2p/p2p_9fu',
+			'./p2p/p2p_paipai',
+			'./p2p/p2p_renren',
+			'./p2p/p2p_souyi',
+			'./p2p/p2p_weidai',
 		];
 
 	    //also delete cache when reload
@@ -27,14 +33,15 @@ exports = module.exports = class P2PFetcher{
 		}
 
 		let sql='CREATE TABLE p2p ( \
-			date character varying(10) primary key, \
-			name character varying(10) not null, \
+			date character varying(10), \
+			name character varying(10), \
 		    m01 decimal(4,2), \
 		    m03 decimal(4,2), \
 		    m06 decimal(4,2), \
 		    m12 decimal(4,2), \
 		    m24 decimal(4,2), \
-		    m36 decimal(4,2) \
+		    m36 decimal(4,2), \
+		    primary key(date, name) \
 		)';
 		db.query('octopus',sql);
 	}
