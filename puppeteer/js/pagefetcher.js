@@ -11,13 +11,10 @@ class PageFetcher{
       './fetch_p2p'
     ];
 
-    //remove these when release
-    this.caching=true;
-    if(!this.caching){
-      delete require.cache[require.resolve('./dbconnector')];
-      for(let pkg of packages)
-        delete require.cache[require.resolve(pkg)];
-    }
+    //also delete cache when reload
+    delete require.cache[require.resolve('./dbconnector')];
+    for(let pkg of packages)
+      delete require.cache[require.resolve(pkg)];
   
     // browser path
     this.browser=null;

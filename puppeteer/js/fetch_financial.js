@@ -16,11 +16,9 @@ exports = module.exports = class FetchFinancialTrigger{
 			'./financial/financial_profit',
 		];
 
-		this.caching=true;
-		if(!this.caching){
-			for(let pkg of packages)
-				delete require.cache[require.resolve(pkg)];
-		}
+	    //also delete cache when reload
+		for(let pkg of packages)
+			delete require.cache[require.resolve(pkg)];
 
 		// add sub-fetchers
 		for(let pkg of packages){

@@ -2,7 +2,7 @@ const Logger=require('./logger');
 const db=require('./dbconnector');
 const PageFetcher=require('./pagefetcher');
 
-exports = module.exports = class FetchP2PTrigger{
+exports = module.exports = class P2PFetcher{
 
 	constructor(pageFetcher){
 		this.url='http://127.0.0.1/echo/p2p';
@@ -13,11 +13,9 @@ exports = module.exports = class FetchP2PTrigger{
 			'./p2p/p2p_jimu',
 		];
 
-		this.caching=true;
-		if(!this.caching){
-			for(let pkg of packages)
-				delete require.cache[require.resolve(pkg)];
-		}
+	    //also delete cache when reload
+		for(let pkg of packages)
+			delete require.cache[require.resolve(pkg)];
 
 		// add sub-fetchers
 		this.fetchers=[];
@@ -29,7 +27,7 @@ exports = module.exports = class FetchP2PTrigger{
 		}
 
 		let sql='CREATE TABLE p2p ( \
-			date character varying(6) primary key, \
+			date character varying(10) primary key, \
 			name character varying(10) not null, \
 		    m01 decimal(4,2), \
 		    m03 decimal(4,2), \
@@ -38,7 +36,7 @@ exports = module.exports = class FetchP2PTrigger{
 		    m24 decimal(4,2), \
 		    m36 decimal(4,2) \
 		)';
-		db.query('p2p',sql);
+		db.query('octopus',sql);
 	}
 
 	fetch(bodyHandle){
@@ -49,5 +47,12 @@ exports = module.exports = class FetchP2PTrigger{
 		for(let fetcher of this.fetchers)
 			PageFetcher.fetch(fetcher.url);
 		return 'Start process p2p, total='+this.fetchers.length;
+	}
+
+	static timestamp(){
+		let today=new Date();
+		let yyyy=today.getFullYear();
+		let mm=today.getMonth()+1;
+		return yyyy+'-'+(mm<10?('0'+mm):mm);
 	}
 }

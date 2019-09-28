@@ -1,38 +1,46 @@
 const Logger=require('../logger');
 const db=require('../dbconnector');
 const PageFetcher=require('../pagefetcher');
-const F10Utils=require('../fetch_p2p');
+const Utils=require('../fetch_p2p');
 
 exports = module.exports = class FetchJiMu{
 
 	constructor(){
-		this.url='https://box.jimu.com/Project/List';
-		this.page='box.jimu.com/Project/List';
+		this.name='积木盒子';
+		this.page='box.jimu.com/Venus/List';
+		this.url='https://'+this.page;
 	}
 
 	fetch(bodyHandle){
+		function parse(str){
+			str = str.replace(/\ +/g,"").replace(/[\r\n]/g,"").replace(/%/g,"");
+			return parseFloat(str);
+		}
+
 		let data={};
-		data.m01=6.0;
-		data.m03=6.0;
-		data.m06=6.0;
-		data.m12=6.0;
-		data.m24=6.0;
-		data.m36=6.0;
+		let hDiv=null;
+		hDiv=bodyHandle.querySelector('body > div.container.venus-container > div.project-container > div > a:nth-child(11) > div > div.info > div.rate > div.num.invest-item-profit');
+		if(hDiv) data.m01=parse(hDiv.textContent);
+		hDiv=bodyHandle.querySelector('body > div.container.venus-container > div.project-container > div > a:nth-child(2) > div > div.info > div.rate > div.num.invest-item-profit');
+		if(hDiv) data.m03=parse(hDiv.textContent);
+		hDiv=bodyHandle.querySelector('body > div.container.venus-container > div.project-container > div > a:nth-child(3) > div > div.info > div.rate > div.num.invest-item-profit');
+		if(hDiv) data.m06=parse(hDiv.textContent);
+		hDiv=bodyHandle.querySelector('body > div.container.venus-container > div.project-container > div > a:nth-child(6) > div > div.info > div.rate > div.num.invest-item-profit');
+		if(hDiv) data.m12=parse(hDiv.textContent);
+
 		return data;
 	}
 
 	async process(data){
-		const date='201906';
-		const name='积木盒子';
-
 		let keys='date,name';
-		let values=date+','+name;
+		let values='\''+Utils.timestamp()+'\',\''+this.name+'\'';
 		for(let key in data){
 			keys+=','+key;
 			values+=','+data[key];
 		}
 		let sql='INSERT INTO p2p ('+keys+') VALUES('+values+')';
 		await db.query('octopus',sql);
+		Logger.log(sql);
 		return data;
 	}
 }
