@@ -4,7 +4,7 @@ const db=require('./dbconnector');
 exports = module.exports = class FetchStockList{
 
 	constructor(){
-		this.page='quote.eastmoney.com/stock_list.html';
+		this.page='quote.eastmoney.com/hk/HStock_list.html';
 		this.url='http://'+this.page;
 		db.destroy();
 	}
@@ -81,7 +81,7 @@ exports = module.exports = class FetchStockList{
 						let name=stock[code];
 						Logger.log(code+": "+name);
 						let sql='INSERT INTO summary (id,name,exchange) VALUES(\''+code+'\',\''+name+'\',\''+ex+'\')';
-						db.query('stocks',sql);
+						db.query('stocks_hk',sql);
 						break;
 					}
 				}
