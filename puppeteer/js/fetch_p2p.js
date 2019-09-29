@@ -17,6 +17,7 @@ exports = module.exports = class P2PFetcher{
 			'./p2p/p2p_renren',
 			'./p2p/p2p_souyi',
 			'./p2p/p2p_weidai',
+			'./p2p/p2p_madai',
 		];
 
 	    //also delete cache when reload
@@ -61,5 +62,46 @@ exports = module.exports = class P2PFetcher{
 		let yyyy=today.getFullYear();
 		let mm=today.getMonth()+1;
 		return yyyy+'-'+(mm<10?('0'+mm):mm);
+	}
+
+	static async update(data,name){
+		let timestamp=this.timestamp();
+		let keys=[];
+		let values=[];
+		for(let key in data){
+			keys.push(key);
+			values.push(data[key]);
+		}
+
+		let skeys='date,name';
+		let svalues='\''+timestamp+'\',\''+name+'\'';
+		for(let i=0;i<keys.length;++i){
+			skeys+=','+keys[i];
+			svalues+=','+values[i];
+		}
+
+		let sql='INSERT INTO p2p ('+skeys+') VALUES('+svalues+')';
+		let result=await db.query('octopus',sql);
+		if(!result){
+			let kvs='';
+			for(let i=0;i<keys.length;++i){
+				kvs+=keys[i]+'='+values[i];
+				if(i!=keys.length-1)
+					kvs+=',';
+			}
+			sql='UPDATE p2p SET '+kvs+' WHERE date=\''+timestamp+'\''+' AND name=\''+name+'\'';
+			result=await db.query('octopus',sql);
+		}
+
+		// let keys='date,name';
+		// let values='\''+timestamp+'\',\''+this.name+'\'';
+		// for(let key in data){
+		// 	keys+=','+key;
+		// 	values+=','+data[key];
+		// }
+		// let sql='INSERT INTO p2p ('+keys+') VALUES('+values+')';
+		// await db.query('octopus',sql);
+		Logger.log(sql);
+		return data;
 	}
 }

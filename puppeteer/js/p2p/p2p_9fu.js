@@ -34,15 +34,6 @@ exports = module.exports = class FetchJiMu{
 	}
 
 	async process(data){
-		let keys='date,name';
-		let values='\''+Utils.timestamp()+'\',\''+this.name+'\'';
-		for(let key in data){
-			keys+=','+key;
-			values+=','+data[key];
-		}
-		let sql='INSERT INTO p2p ('+keys+') VALUES('+values+')';
-		await db.query('octopus',sql);
-		Logger.log(sql);
-		return data;
+		return Utils.update(data,this.name);
 	}
 }
