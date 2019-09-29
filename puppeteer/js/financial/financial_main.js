@@ -145,42 +145,42 @@ exports = module.exports = class FetchFinancial{
 			let code=Data.code;
 			let data=Data.data;
 			if(code && data){
-				for(let i=0;i<data.length;++i){
-					let d=data[i];
-					if(d.eps!=0)
-						d.sc=d.npas/d.eps;
-					if(d.cl!=0)
-						d.cr=d.ca/d.cl;
-					if(d.eas!=0){
-						d.er=d.tl*100/d.eas;
-						if(d.er>999999)d.er=999999;
-						if(d.er<-999999)d.er=-999999;
-					}
-					if(d.cl!=0){
-						d.ocfr=d.ocf/d.cl;
-						if(d.ocfr>99999)d.ocfr=99999;
-						if(d.ocfr<-99999)d.ocfr=-99999;
-					}
-					if(i==data.length-1){
-						if(d.ta!=0){
-							d.roa=d.gp/d.ta;
-							d.ato=d.gr/d.ta;
-						}
-					}else{
-						let avgta=(d.ta+data[i+1].ta)/2;
-						if(avgta!=0){
-							d.roa=d.gp/avgta;
-							d.ato=d.gr/avgta;
-						}
-					}
-					if(d.roa>99999)d.roa=99999;
-					if(d.roa<-99999)d.roa=-99999;
-					if(d.ato>99999)d.ato=99999;
-					if(d.ato<-99999)d.ato=-99999;
-				}
-
 				let res=await this.createTable(code);
 				if(res){
+					for(let i=0;i<data.length;++i){
+						let d=data[i];
+						if(d.eps!=0)
+							d.sc=d.npas/d.eps;
+						if(d.cl!=0)
+							d.cr=d.ca/d.cl;
+						if(d.eas!=0){
+							d.er=d.tl*100/d.eas;
+							if(d.er>999999)d.er=999999;
+							if(d.er<-999999)d.er=-999999;
+						}
+						if(d.cl!=0){
+							d.ocfr=d.ocf/d.cl;
+							if(d.ocfr>99999)d.ocfr=99999;
+							if(d.ocfr<-99999)d.ocfr=-99999;
+						}
+						if(i==data.length-1){
+							if(d.ta!=0){
+								d.roa=d.gp/d.ta;
+								d.ato=d.gr/d.ta;
+							}
+						}else{
+							let avgta=(d.ta+data[i+1].ta)/2;
+							if(avgta!=0){
+								d.roa=d.gp/avgta;
+								d.ato=d.gr/avgta;
+							}
+						}
+						if(d.roa>99999)d.roa=99999;
+						if(d.roa<-99999)d.roa=-99999;
+						if(d.ato>99999)d.ato=99999;
+						if(d.ato<-99999)d.ato=-99999;
+					}
+
 					for(let d of data){
 						await this.insertData(code,d);
 					}
