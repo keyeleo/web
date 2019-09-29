@@ -1,7 +1,7 @@
 const Logger=require('./logger');
 const db=require('./dbconnector');
 
-exports = module.exports = class FetchStockList{
+exports = module.exports = class FetchHKStocks{
 
 	constructor(){
 		this.page='quote.eastmoney.com/hk/HStock_list.html';
@@ -10,49 +10,33 @@ exports = module.exports = class FetchStockList{
 	}
 
 	fetch(bodyHandle){
-		let data={};
-
 		//all ul
-		let ulHandles=bodyHandle.querySelectorAll('ul');
-		if(!ulHandles)
-			return '<ul> not found when fetch stock_list';
-		for(let ulHandle of ulHandles){
-			// exchange list
-			let liHandles=ulHandle.querySelectorAll('li');
-			if(!liHandles)
-				continue;
-
-			// exchange: sh or sz
-			let ex=null;
-			let aNameHandle=ulHandle.querySelector('a');
-			if(aNameHandle)
-				ex=aNameHandle.name;
-			if(!ex)
-				continue;
-
-			// stocks list
-			let stockList = [];
-			for(let liHandle of liHandles){
-				let aHandle=liHandle.querySelector('a[href]');
-				if(aHandle){
-					let str=aHandle.textContent;
-					let code=str.substr(str.indexOf('(')+1,6);
-					let name=str.substr(0,str.indexOf('('));
-					let stock={};
-					stock[code]=name;
-					stockList.push(stock);
+		let ulHandle=bodyHandle.querySelector('body > div:nth-child(10) > div > ul');
+		if(!ulHandle)
+			return {'error':'<ul> not found when fetch stocks_hk'};
+		let aHandles=ulHandle.querySelectorAll('a');
+		if(!aHandles)
+			return {'error':'<a> not found when fetch stocks_hk'};
+		let data={};
+		for(let aHandle of aHandles){
+			let str=aHandle.textContent;
+			if(str.indexOf(')')==6){
+				const code=str.substr(str.indexOf('(')+1,5);
+				const name=str.substr(str.indexOf(')')+1);
+				const n=parseInt(code);
+				if(n<10000){
+					data[code]=name;
 				}
 			}
-
-			// data[ex+'_count']=liHandles.length;
-			data[ex]=stockList;
 		}
 
 		return data;
 	}
 
 	async process(data){
-		if(data){
+		if(data.error)
+			return data.error;
+		else{
 			/*
 			exchange: sz/sh
 			grade: A-D
@@ -61,7 +45,7 @@ exports = module.exports = class FetchStockList{
 			*/
 			let sql='CREATE TABLE summary ( \
 			    id character varying(6) primary key, \
-			    name character varying(10) not null, \
+			    name character varying(30) not null, \
 			    addr character varying(6), \
 			    type integer, \
 			    ipo timestamp(6) without time zone, \
@@ -70,23 +54,17 @@ exports = module.exports = class FetchStockList{
 			    level integer default 0, \
 			    status integer default 0\
 			)';
-			await db.query('stocks',sql);
+			await db.query('stocks_hk',sql);
 			Logger.log('table summary created');
 
 			// let sql='INSERT INTO stock_list (code,name) VALUES(\'%s\',\'%s\')';
-			for(let ex in data){
-				let stockList=data[ex];
-				for(let stock of stockList){
-					for(let code in stock){
-						let name=stock[code];
-						Logger.log(code+": "+name);
-						let sql='INSERT INTO summary (id,name,exchange) VALUES(\''+code+'\',\''+name+'\',\''+ex+'\')';
-						db.query('stocks_hk',sql);
-						break;
-					}
-				}
+			for(let code in data){
+				let name=data[code];
+				let sql='INSERT INTO summary (id,name,exchange) VALUES(\''+code+'\',\''+name+'\',\'hk\')';
+				if(db.query('stocks_hk',sql))
+					Logger.log('insert '+code+": "+name);
 			}
-			Logger.log('Process stock list completed!');
+			Logger.log('Process stock list completed! total:'+data.length);
 		}
 		return data;
 	}

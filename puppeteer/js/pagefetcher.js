@@ -6,8 +6,10 @@ const Logger=require('./logger');
 class PageFetcher{
   constructor(){
     const packages=[
-      './fetch_stock_list',
+      './fetch_stocks_cn',
+      './fetch_stocks_hk',
       './fetch_financial',
+      './fetch_financial_hk',
       './fetch_p2p'
     ];
 

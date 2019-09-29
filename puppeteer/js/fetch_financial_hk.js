@@ -5,15 +5,15 @@ const PageFetcher=require('./pagefetcher');
 exports = module.exports = class FetchFinancialTrigger{
 
 	constructor(pageFetcher){
-		// http://127.0.0.1/echo/financial;
-		this.page='echo/financial/cn';
+		this.page='echo/financial/hk';
+		this.url='http://127.0.0.1/'+this.page;
 		db.destroy();
 
 		const packages=[
-			'./financial/financial_main',
-			'./financial/financial_balance',
-			'./financial/financial_cash',
-			'./financial/financial_profit',
+			// './financial/financial_main',
+			// './financial/financial_balance',
+			// './financial/financial_cash',
+			// './financial/financial_profit',
 		];
 
 	    //also delete cache when reload
@@ -32,14 +32,10 @@ exports = module.exports = class FetchFinancialTrigger{
 	}
 
 	async process(data){
-		// 沪A: sh600xxx, sh601xxx, sh603xxx
-		// 深A: sz000xxx, sz002xxx
-		// 创业: sz300xxx
-		// This filters with status, so just use it normally when new stock published
-		
+		// This filters with status, so just use it normally when new stock published		
 		let sql='SELECT id FROM summary WHERE (status IS NULL OR status<1) AND \
 (id<\'003000\' OR id>\'300000\' AND id<\'300100\' OR id>\'600000\' AND id<\'604000\') ORDER BY id';
-		let res=await db.query('stocks',sql);
+		let res=await db.query('stocks_hk',sql);
 
 		let stocks=[];
 		let ids=[];
@@ -65,8 +61,8 @@ exports = module.exports = class FetchFinancialTrigger{
 
 	async processList(ids){
 		for(let code of ids){
-			const url='http://quotes.money.163.com/f10/zycwzb_'+code+'.html';
-	        await PageFetcher.fetch(url);
+			// const url='http://quotes.money.163.com/f10/zycwzb_'+code+'.html';
+	  //       await PageFetcher.fetch(url);
 		}
 	}
 }
