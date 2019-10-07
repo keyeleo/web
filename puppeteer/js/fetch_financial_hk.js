@@ -8,7 +8,12 @@ class Fetcher{
 		this.url='http://'+this.page+'?type=web&code=';
 	}
 
-	fetch(bodyHandle){
+	async prepare(page){
+		//wait for data loaded
+		await this.sleep(1000);
+	}
+
+	fetch(bodyHandle, log){
 		function initData(period){
 			let data={};
 			data.period=period;
@@ -119,37 +124,103 @@ class Fetcher{
 			return {'code':code, 'error':'<tbody> not found when fetch cash'};
 		let hhCash=hCash.querySelectorAll('tr');
 
-	// // fill('sc',);
-	// 	fill('ta',23,hhBalance);
-	// 	fill('tl',42,hhBalance);
-	// 	fill('ca',9,hhBalance);
-	// 	fill('ivt',7,hhBalance);
-	// 	fill('tr',5,hhBalance);
-	// // fill('dr',);
-	// 	fill('adv',6,hhBalance);
-	// 	fill('cl',32,hhBalance);
-	// 	fill('gr',1,hhProfit);
-	// 	fill('cor',2,hhProfit);
-	// 	fill('np',13,hhProfit);
-	// 	fill('npas',14,hhProfit);
-	// 	fill('npc',11,hhMain);
-	// 	fill('gm',22,hhMain);
-	// 	fill('pm',23,hhMain);
-	// 	fill('ocf',17,hhCash);
-	// 	fill('icf',29,hhCash);
-	// 	fill('fcf',40,hhCash);
-	// 	fill('roe',19,hhMain);
-	// 	fill('roa',21,hhMain);
-	// 	fill('cr',31,hhMain);
-	// // fill('atr',);
-	// // fill('ocfr',);
-	// // fill('er',);
-	// // fill('ato',);
-	// // fill('ito',);
-	// // fill('rto',);
+		//build map for all rows
+		var rowsMap={};
+		for(let hTable of [hhMain, hhBalance, hhProfit, hhCash]){
+			for(hRow of hTable){
+				let hName=hRow.querySelector('td');
+				if(hName)
+					rowsMap[hName.textContent]=hRow;
+			}
+		}
 
-	// 	fill('eps',2,hhMain);
-	// 	fill('eas',49,hhBalance);
+		function fill2(field,name){
+			// let hta=handles[idx];
+			let hta=rowsMap[name];
+			if(!hta){
+				if(field=='cor')
+					hta=rowsMap['营业支出(计算)'];
+			}
+			if(!hta){
+				for(let key in rowsMap){
+					if(name.indexOf(key)>=0){
+						hta=rowsMap[key];
+						break;
+					}
+				}
+				if(!hta){
+					if(field=='adv' || field=='ivt')
+						return true;
+					if(field=='ca' || field=='cl' || field=='tr' || field=='cor'){
+						for(let key in rowsMap){
+							if(key=='现金、存放同业和其他金融机构款项'){
+								return true;
+							}
+						}
+					}
+					return false;
+				}
+			}
+
+			let hData=hta.querySelectorAll('td');
+			for(let i=1;i<hData.length;++i){
+				if(i>data.length)
+					continue;
+				let str=hData[i].textContent;
+				let scale=(str.indexOf('万')>=0?10000:1);				
+				scale*=(str.indexOf('亿')>=0?100000000:1);
+				str=str.replace(/万/g,'');
+				str=str.replace(/亿/g,'');
+				let value=scale * parseFloat(str);
+				if(field!='roe' && field!='roa' && field!='pm' && field!='gm')
+					value/=1000000;	//=>1m
+				if(field=='ta' || field=='tl' || field=='ca' || field=='cl')
+					value/=100;		//=>100m
+
+				let d=data[i-1];
+				if(value)
+					d[field]=value;
+			}	
+			return true;	
+		}
+
+		let indicators={
+			// 'sc': '',
+			'ta': '资产总额(元)',
+			'tl': '负债总额(元)',
+			'ca': '流动资产合计',
+			'cl': '流动负债合计',
+			'ivt': '存货',
+			'tr': '应收账款及票据',
+			// 'dr': '',
+			'adv': '预付款项、按金及其他应收款项(流动)',
+			'gr': '营业收入(计算)',
+			'cor': '销售成本',
+			'np': '净利润',
+			'npas': '本公司拥有人应占净利润',
+			// 'npc': '',
+			'gm': '毛利率(%)',
+			'pm': '净利率(%)',
+			'ocf': '经营活动产生的现金流量净额',
+			'icf': '投资活动产生的现金流量净额',
+			'fcf': '融资活动产生的现金流量净额',
+			'roe': '平均净资产收益率(%)',
+			'roa': '总资产净利率(%)',
+			'cr': '流动比率',
+			// 'atr': '',
+			// 'ocfr': '',
+			// 'er': '',
+			// 'ato': '',
+			// 'ito': '',
+			// 'rto': '',
+			'eps': '基本每股收益(元)',
+			'eas': '归属于母公司股东权益',
+		};
+		for(let ik in indicators){
+			let indicator=indicators[ik];
+			if(!fill2(ik, indicator))
+				return {'code':code, 'error': code+': '+indicator+' error'};
+		}
 
 		return {'code':code, 'data':data};
 	}
@@ -164,7 +235,7 @@ class Fetcher{
 					for(let i=0;i<data.length;++i){
 						let d=data[i];
 						if(d.eps!=0)
-							d.sc=d.npas/d.eps;
+							d.sc=Math.ceil(d.npas/d.eps/10000);
 						if(d.cl!=0)
 							d.cr=d.ca/d.cl;
 						if(d.eas!=0){
@@ -194,6 +265,7 @@ class Fetcher{
 						}
 						if(d.ato>99999)d.ato=99999;
 						if(d.ato<-99999)d.ato=-99999;
+						d.cor=-d.cor;
 					}
 
 					for(let d of data){
@@ -205,7 +277,7 @@ class Fetcher{
 					db.query('stocks_hk',sql);
 				}
 			}else
-				Logger.log(Data.error);
+				Logger.log('Error: '+Data.error);
 		}
 		return Data;
 	}
@@ -323,6 +395,10 @@ class Fetcher{
 	code2table(code){
 		return 'f10_'+code;
 	}
+
+	sleep(ms){
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
 }
 
 exports = module.exports = class FetchFinancialTrigger{
@@ -351,13 +427,10 @@ exports = module.exports = class FetchFinancialTrigger{
 		const bundle=1+res.rows.length/parallel;
 		for(let i=0,ii=res.rows.length;i<ii;++i){
 			ids.push(res.rows[i].id);
-			// if(ids.length>=bundle || i==ii-1){
-			// 	stocks.push(ids);
-			// 	ids=[];
-			// }
-			Logger.log('found '+res.rows[i].id);
-			stocks.push(ids);
-			break;
+			if(ids.length>=bundle || i==ii-1){
+				stocks.push(ids);
+				ids=[];
+			}
 		}		
 
 		let count=0;
