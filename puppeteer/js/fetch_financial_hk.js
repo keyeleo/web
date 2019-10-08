@@ -13,7 +13,7 @@ class Fetcher{
 		await this.sleep(1000);
 	}
 
-	fetch(bodyHandle, log){
+	fetch(bodyHandle){
 		function initData(period){
 			let data={};
 			data.period=period;
@@ -140,6 +140,10 @@ class Fetcher{
 			if(!hta){
 				if(field=='cor')
 					hta=rowsMap['营业支出(计算)'];
+				else if(field=='gr')
+					hta=rowsMap['营业总收入(元)'];
+				else if(field=='ca')
+					hta=rowsMap['现金及现金等价物'];
 			}
 			if(!hta){
 				for(let key in rowsMap){
@@ -149,11 +153,12 @@ class Fetcher{
 					}
 				}
 				if(!hta){
-					if(field=='adv' || field=='ivt')
+					if(field=='adv' || field=='ivt' || field=='cor' || field=='tr' || field=='icf' || field=='fcf')
 						return true;
-					if(field=='ca' || field=='cl' || field=='tr' || field=='cor'){
+					if(field=='ca' || field=='cl' || field=='tr'){
 						for(let key in rowsMap){
-							if(key=='现金、存放同业和其他金融机构款项'){
+							//bank or ensurance
+							if(key=='现金、存放同业和其他金融机构款项' || key=='保险负债总额'){
 								return true;
 							}
 						}
@@ -225,7 +230,7 @@ class Fetcher{
 		return {'code':code, 'data':data};
 	}
 
-	async process(Data){
+	async process(Data,url){
 		if(Data){
 			let code=Data.code;
 			let data=Data.data;
@@ -276,8 +281,24 @@ class Fetcher{
 					let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
 					db.query('stocks_hk',sql);
 				}
-			}else
-				Logger.log('Error: '+Data.error);
+			}else{
+				if(Data.error=='invalid code' || Data.error.indexOf('资产总额(元) error')>=0){
+					let code='';
+					if(url && url.length>0){
+						var reg = new RegExp("(^|&)code=([^&]*)(&|$)");
+						var r = url.substr(1).match(reg);
+						if(r) code=decodeURI(r[2]);
+					}
+					if(code && code.length>0){
+						let status=2;	//delisted
+						let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
+						db.query('stocks_hk',sql);
+						Logger.log('Delisted: '+code);
+					}else
+						Logger.log('Error: '+Data.error);
+				}else
+					Logger.log('Error: '+Data.error);
+			}
 		}
 		return Data;
 	}

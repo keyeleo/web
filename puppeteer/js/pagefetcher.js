@@ -81,6 +81,8 @@ class PageFetcher{
     if(!page)
       return 'Error: browser error';
 
+    // log from page
+    page.on('console', msg => Logger.log(msg.text()));
     await page.goto(url,{
       timeout: 0,
       waitUntil: 'load'
@@ -102,7 +104,7 @@ class PageFetcher{
             Logger.log('Evaluate '+url+' error: '+e);
           });
           if(fetcher.process)
-            result=await fetcher.process(result);
+            result=await fetcher.process(result,url);
           break;
         }
       }
