@@ -42,12 +42,13 @@ class PageFetcher{
       // connect to browser
       this.browser = await puppeteer.launch({
         executablePath: this.chromePath,
-          args: [
-              '--no-sandbox',
-              '--disable-setuid-sandbox',
-              '--disable-software-rasterizer',
-              '--disable-gpu'
-          ]
+        // headless: false,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-software-rasterizer',
+            '--disable-gpu'
+        ]
       });
     }
   }

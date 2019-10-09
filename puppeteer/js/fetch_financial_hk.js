@@ -422,7 +422,7 @@ exports = module.exports = class FetchFinancialTrigger{
 		Logger.log('fetch_financial_hk process');
 		// This filters with status, so just use it normally when new stock published		
 		let sql='SELECT id FROM summary WHERE (status IS NULL OR status<1) ORDER BY id';
-		let res=await db.query(this.stocks,sql);
+		let res=await db.query(this.fetcher.stocks,sql);
 
 		let stocks=[];
 		let ids=[];

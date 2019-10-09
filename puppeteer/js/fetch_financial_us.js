@@ -15,6 +15,37 @@ class Fetcher{
 	}
 
 	fetch(bodyHandle){
+		//window.location.pathname=/GOOG/finance/
+		let code=window.location.pathname.substring(1,window.location.pathname.indexOf('/',1));
+		var data={};
+
+		//head or title
+		let hFrame=bodyHandle.querySelector('#dataIFrame');
+		if(!hFrame)
+			return {'code':code, 'error':'<dataIFrame> not found when fetch stocks_us'};
+		let dom=hFrame.contentDocument;
+		let keyindex=dom.querySelector('#keyindex');
+		if(!keyindex)
+			return {'code':code, 'error':'<keyindex> not found when fetch stocks_us'};
+		let benefit=dom.querySelector('#benefit');
+		if(!benefit)
+			return {'code':code, 'error':'<benefit> not found when fetch stocks_us'};
+		let debt=dom.querySelector('#debt');
+		if(!debt)
+			return {'code':code, 'error':'<debt> not found when fetch stocks_us'};
+		let cash=dom.querySelector('#cash');
+		if(!cash)
+			return {'code':code, 'error':'<cash> not found when fetch stocks_us'};
+
+		return {'code': code, 'data':{
+			'keyindex': keyindex.textContent,
+			'benefit': benefit.textContent,
+			'debt': debt.textContent,
+			'cash': cash.textContent,
+		}};
+	}
+
+	parse(Data){
 		function initData(period){
 			let data={};
 			data.period=period;
@@ -50,146 +81,6 @@ class Fetcher{
 			return data;
 		}
 
-		function fill(field,idx,handles){
-			let hta=handles[idx];
-			let hData=hta.querySelectorAll('td');
-			for(let i=0;i<hData.length;++i){
-				if(i>=data.length)
-					continue;
-				let str=hData[i].textContent;
-				let scale=(str.indexOf('亿')>=0?100000000:1);				
-				let value=scale * parseInt(str.replace(/亿/g,''));
-				value/=1000000;		//=>1m
-				if(field=='ta' || field=='tl' || field=='ca' || field=='cl')
-					value/=100;		//=>100m
-
-				let d=data[i];
-				if(value)
-					d[field]=value;
-			}		
-		}
-
-		let code=null;
-		if(window.location.search.length>0){
-			var reg = new RegExp("(^|&)code=([^&]*)(&|$)");
-			var r = window.location.search.substr(1).match(reg);
-			if(r) code=decodeURI(r[2]);
-		}
-		if(!code)
-			return {'code':'null', 'error':'invalid code'};
-
-		var data=[];
-		//head or title
-		let hHeads=bodyHandle.querySelector('#tb_zcfzb_abgqex > tbody > tr:nth-child(1)');
-		if(!hHeads)
-			return {'code':code, 'error':'<tr> not found when fetch period'};
-		let hPeriods=hHeads.querySelectorAll('th');
-		if(!hPeriods)
-			return {'code':code, 'error':'<th> not found when fetch period'};
-		for(let i=0;i<hPeriods.length;++i){
-			if(i==0)continue;
-			let hPeriod=hPeriods[i];
-			let str=hPeriod.textContent;	//19-06-30
-			let year='20'+str.substr(0,2);
-			let quater=str.substr(3,2)/3;
-			let period=year+'Q'+quater;
-			if(period.length!=6)
-				continue;
-			let d=initData(period);
-
-			// temp used
-			d.eps=0;
-			d.eas=0;	//Equity Attributable to ShareHolders
-
-			data.push(d);
-		}
-
-		//tables
-		let hMain=bodyHandle.querySelector('#table2_abgq2 > tbody');
-		if(!hMain)
-			return {'code':code, 'error':'<tbody> not found when fetch main'};
-		let hhMain=hMain.querySelectorAll('tr');
-
-		let hBalance=bodyHandle.querySelector('#tb_zcfzb_abgqex > tbody');
-		if(!hBalance)
-			return {'code':code, 'error':'<tbody> not found when fetch balance'};
-		let hhBalance=hBalance.querySelectorAll('tr');
-
-		let hProfit=bodyHandle.querySelector('#table_abgqex > tbody');
-		if(!hProfit)
-			return {'code':code, 'error':'<tbody> not found when fetch profit'};
-		let hhProfit=hProfit.querySelectorAll('tr');
-
-		let hCash=bodyHandle.querySelector('#table1_abgq1ex > tbody');
-		if(!hCash)
-			return {'code':code, 'error':'<tbody> not found when fetch cash'};
-		let hhCash=hCash.querySelectorAll('tr');
-
-		//build map for all rows
-		var rowsMap={};
-		for(let hTable of [hhMain, hhBalance, hhProfit, hhCash]){
-			for(hRow of hTable){
-				let hName=hRow.querySelector('td');
-				if(hName)
-					rowsMap[hName.textContent]=hRow;
-			}
-		}
-
-		function fill2(field,name){
-			// let hta=handles[idx];
-			let hta=rowsMap[name];
-			if(!hta){
-				if(field=='cor')
-					hta=rowsMap['营业支出(计算)'];
-				else if(field=='gr')
-					hta=rowsMap['营业总收入(元)'];
-				else if(field=='ca')
-					hta=rowsMap['现金及现金等价物'];
-			}
-			if(!hta){
-				for(let key in rowsMap){
-					if(name.indexOf(key)>=0){
-						hta=rowsMap[key];
-						break;
-					}
-				}
-				if(!hta){
-					if(field=='adv' || field=='ivt' || field=='cor' || field=='tr' || field=='icf' || field=='fcf')
-						return true;
-					if(field=='ca' || field=='cl' || field=='tr'){
-						for(let key in rowsMap){
-							//bank or ensurance
-							if(key=='现金、存放同业和其他金融机构款项' || key=='保险负债总额'){
-								return true;
-							}
-						}
-					}
-					return false;
-				}
-			}
-
-			let hData=hta.querySelectorAll('td');
-			for(let i=1;i<hData.length;++i){
-				if(i>data.length)
-					continue;
-				let str=hData[i].textContent;
-				let scale=(str.indexOf('万')>=0?10000:1);				
-				scale*=(str.indexOf('亿')>=0?100000000:1);
-				str=str.replace(/万/g,'');
-				str=str.replace(/亿/g,'');
-				let value=scale * parseFloat(str);
-				if(field!='roe' && field!='roa' && field!='pm' && field!='gm')
-					value/=1000000;	//=>1m
-				if(field=='ta' || field=='tl' || field=='ca' || field=='cl')
-					value/=100;		//=>100m
-
-				let d=data[i-1];
-				if(value)
-					d[field]=value;
-			}	
-			return true;	
-		}
-
 		let indicators={
 			// 'sc': '',
 			'ta': '资产总额(元)',
@@ -222,81 +113,147 @@ class Fetcher{
 			'eps': '基本每股收益(元)',
 			'eas': '归属于母公司股东权益',
 		};
+
+		function parseTable(tb,report){
+			for(let i=1;i<tb.title.length;++i){
+				let title=tb.title[i][0];
+				let unit=tb.title[i][1];
+				let data=tb.report[i];
+				if(unit.substring(0,2)=='百万'){
+					// for(let j=0;j<data.length;++j){
+					// 	data[j]*=100;
+					// }
+				}
+
+				report[title]=data;
+				Logger.log(title);
+			}
+		}
+
+		function fill(rowsMap,field,name){
+			// let hta=handles[idx];
+			let hta=rowsMap[name];
+			if(!hta){
+				if(field=='cor')
+					hta=rowsMap['营业支出(计算)'];
+				else if(field=='gr')
+					hta=rowsMap['营业总收入(元)'];
+				else if(field=='ca')
+					hta=rowsMap['现金及现金等价物'];
+			}
+			if(!hta){
+				for(let key in rowsMap){
+					if(name.indexOf(key)>=0){
+						hta=rowsMap[key];
+						break;
+					}
+				}
+				if(!hta){
+					if(field=='adv' || field=='ivt' || field=='cor' || field=='tr' || field=='icf' || field=='fcf')
+						return true;
+					if(field=='ca' || field=='cl' || field=='tr'){
+						for(let key in rowsMap){
+							//bank or ensurance
+							if(key=='现金、存放同业和其他金融机构款项' || key=='保险负债总额'){
+								return true;
+							}
+						}
+					}
+					return false;
+				}
+			}
+
+			for(let svalue of hta){
+				let value=parseFloat(svalue);
+				if(field!='roe' && field!='roa' && field!='pm' && field!='gm')
+					value/=1000000;	//=>1m
+				if(field=='ta' || field=='tl' || field=='ca' || field=='cl')
+					value/=100;		//=>100m
+
+				let d=data[i-1];
+				if(value)
+					d[field]=value;
+			}	
+			return true;	
+		}
+
+		let keyindex=JSON.parse(Data.keyindex);
+		let benefit=JSON.parse(Data.benefit);
+		let debt=JSON.parse(Data.debt);
+		let cash=JSON.parse(Data.cash);
+		let report={};
+		parseTable(keyindex,report);
+		// parseTable(benefit,report);
+		// parseTable(debt,report);
+		// parseTable(cash,report);
+
 		for(let ik in indicators){
 			let indicator=indicators[ik];
-			if(!fill2(ik, indicator))
+			if(!fill(report, ik, indicator))
 				return {'code':code, 'error': code+': '+indicator+' error'};
 		}
 
-		return {'code':code, 'data':data};
+		var data={};
+		return data;
 	}
 
 	async process(Data,url){
 		if(Data){
 			let code=Data.code;
-			let data=Data.data;
+			let data=this.parse(Data.data);
 			if(code && data){
-				let res=await this.createTable(code);
-				if(res){
-					for(let i=0;i<data.length;++i){
-						let d=data[i];
-						if(d.eps!=0)
-							d.sc=Math.ceil(d.npas/d.eps/10000);
-						if(d.cl!=0)
-							d.cr=d.ca/d.cl;
-						if(d.eas!=0){
-							d.er=d.tl*100/d.eas;
-							if(d.er>999999)d.er=999999;
-							if(d.er<-999999)d.er=-999999;
-						}
-						if(d.cl!=0){
-							d.ocfr=d.ocf/d.cl;
-							if(d.ocfr>99999)d.ocfr=99999;
-							if(d.ocfr<-99999)d.ocfr=-99999;
-						}
-						if(i==data.length-1){
-							if(d.ta!=0){
-								d.ato=d.gr/d.ta;
-							}
-							if(d.ivt!=0)
-								d.ito=d.cor/d.ivt;
-						}else{
-							let avgta=(d.ta+data[i+1].ta)/2;
-							if(avgta!=0){
-								d.ato=d.gr/avgta;
-							}
-							let avgivt=(d.ivt+data[i+1].ivt)/2;
-							if(avgivt!=0)
-								d.ito=d.cor/avgivt;
-						}
-						if(d.ato>99999)d.ato=99999;
-						if(d.ato<-99999)d.ato=-99999;
-						d.cor=-d.cor;
-					}
+				// let res=await this.createTable(code);
+				// if(res){
+				// 	for(let i=0;i<data.length;++i){
+				// 		let d=data[i];
+				// 		if(d.eps!=0)
+				// 			d.sc=Math.ceil(d.npas/d.eps/10000);
+				// 		if(d.cl!=0)
+				// 			d.cr=d.ca/d.cl;
+				// 		if(d.eas!=0){
+				// 			d.er=d.tl*100/d.eas;
+				// 			if(d.er>999999)d.er=999999;
+				// 			if(d.er<-999999)d.er=-999999;
+				// 		}
+				// 		if(d.cl!=0){
+				// 			d.ocfr=d.ocf/d.cl;
+				// 			if(d.ocfr>99999)d.ocfr=99999;
+				// 			if(d.ocfr<-99999)d.ocfr=-99999;
+				// 		}
+				// 		if(i==data.length-1){
+				// 			if(d.ta!=0){
+				// 				d.ato=d.gr/d.ta;
+				// 			}
+				// 			if(d.ivt!=0)
+				// 				d.ito=d.cor/d.ivt;
+				// 		}else{
+				// 			let avgta=(d.ta+data[i+1].ta)/2;
+				// 			if(avgta!=0){
+				// 				d.ato=d.gr/avgta;
+				// 			}
+				// 			let avgivt=(d.ivt+data[i+1].ivt)/2;
+				// 			if(avgivt!=0)
+				// 				d.ito=d.cor/avgivt;
+				// 		}
+				// 		if(d.ato>99999)d.ato=99999;
+				// 		if(d.ato<-99999)d.ato=-99999;
+				// 		d.cor=-d.cor;
+				// 	}
 
-					for(let d of data){
-						await this.insertData(code,d);
-					}
+				// 	for(let d of data){
+				// 		await this.insertData(code,d);
+				// 	}
 
-					let status=1;	//fetched
+				// 	let status=1;	//fetched
+				// 	let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
+				// 	db.query(this.stocks,sql);
+				// }
+			}else{
+				if(code && code.length>0){
+					let status=2;	//delisted
 					let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
 					db.query(this.stocks,sql);
-				}
-			}else{
-				if(Data.error=='invalid code' || Data.error.indexOf('资产总额(元) error')>=0){
-					let code='';
-					if(url && url.length>0){
-						var reg = new RegExp("(^|&)code=([^&]*)(&|$)");
-						var r = url.substr(1).match(reg);
-						if(r) code=decodeURI(r[2]);
-					}
-					if(code && code.length>0){
-						let status=2;	//delisted
-						let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
-						db.query(this.stocks,sql);
-						Logger.log('Delisted: '+code);
-					}else
-						Logger.log('Error: '+Data.error);
+					Logger.log('Delisted: '+code);
 				}else
 					Logger.log('Error: '+Data.error);
 			}
@@ -441,7 +398,7 @@ exports = module.exports = class FetchFinancialTrigger{
 		Logger.log('fetch_financial_us process');
 		// This filters with status, so just use it normally when new stock published		
 		let sql='SELECT id FROM summary WHERE (status IS NULL OR status<1) ORDER BY id';
-		let res=await db.query(this.stocks,sql);
+		let res=await db.query(this.fetcher.stocks,sql);
 
 		let stocks=[];
 		let ids=[];
@@ -449,6 +406,10 @@ exports = module.exports = class FetchFinancialTrigger{
 		const bundle=1+res.rows.length/parallel;
 		for(let i=0,ii=res.rows.length;i<ii;++i){
 			ids.push(res.rows[i].id);
+
+			stocks.push(ids);
+			break;
+
 			if(ids.length>=bundle || i==ii-1){
 				stocks.push(ids);
 				ids=[];
