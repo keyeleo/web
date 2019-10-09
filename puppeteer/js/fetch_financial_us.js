@@ -4,9 +4,9 @@ const PageFetcher=require('./pagefetcher');
 
 class Fetcher{
 	constructor(pageFetcher){
-		this.page='emweb.securities.eastmoney.com/PC_HKF10/FinancialAnalysis/index';
-		this.url='http://'+this.page+'?type=web&code=';
-		this.stocks='stocks_hk';
+		this.page='stockpage.10jqka.com.cn/';
+		this.url='http://'+this.page+'_code_/finance/';
+		this.stocks='stocks_us';
 	}
 
 	async prepare(page){
@@ -48,6 +48,25 @@ class Fetcher{
 			data.ito=0;
 			data.rto=0;
 			return data;
+		}
+
+		function fill(field,idx,handles){
+			let hta=handles[idx];
+			let hData=hta.querySelectorAll('td');
+			for(let i=0;i<hData.length;++i){
+				if(i>=data.length)
+					continue;
+				let str=hData[i].textContent;
+				let scale=(str.indexOf('亿')>=0?100000000:1);				
+				let value=scale * parseInt(str.replace(/亿/g,''));
+				value/=1000000;		//=>1m
+				if(field=='ta' || field=='tl' || field=='ca' || field=='cl')
+					value/=100;		//=>100m
+
+				let d=data[i];
+				if(value)
+					d[field]=value;
+			}		
 		}
 
 		let code=null;
@@ -116,7 +135,7 @@ class Fetcher{
 			}
 		}
 
-		function fill(field,name){
+		function fill2(field,name){
 			// let hta=handles[idx];
 			let hta=rowsMap[name];
 			if(!hta){
@@ -205,7 +224,7 @@ class Fetcher{
 		};
 		for(let ik in indicators){
 			let indicator=indicators[ik];
-			if(!fill(ik, indicator))
+			if(!fill2(ik, indicator))
 				return {'code':code, 'error': code+': '+indicator+' error'};
 		}
 
@@ -392,7 +411,7 @@ class Fetcher{
 	}
 
 	code2db(code){
-		return 'f10_hk';
+		return 'f10_us';
 	}
 
 	code2table(code){
@@ -406,7 +425,7 @@ class Fetcher{
 
 exports = module.exports = class FetchFinancialTrigger{
 	constructor(pageFetcher){
-		this.page='echo/financial/hk';
+		this.page='echo/financial/us';
 		this.url='http://127.0.0.1/'+this.page;
 		db.destroy();
 
@@ -419,7 +438,7 @@ exports = module.exports = class FetchFinancialTrigger{
 	}
 
 	async process(data){
-		Logger.log('fetch_financial_hk process');
+		Logger.log('fetch_financial_us process');
 		// This filters with status, so just use it normally when new stock published		
 		let sql='SELECT id FROM summary WHERE (status IS NULL OR status<1) ORDER BY id';
 		let res=await db.query(this.stocks,sql);
@@ -448,7 +467,7 @@ exports = module.exports = class FetchFinancialTrigger{
 
 	async processList(ids){
 		for(let code of ids){
-			const url=this.fetcher.url+code;
+			const url=this.fetcher.url.replace(/_code_/g,code)
 			await PageFetcher.fetch(url);
 		}
 	}

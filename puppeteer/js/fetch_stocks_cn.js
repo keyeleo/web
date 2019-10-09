@@ -6,6 +6,7 @@ exports = module.exports = class FetchStockList{
 	constructor(){
 		this.page='quote.eastmoney.com/stock_list.html';
 		this.url='http://'+this.page;
+		this.stocks='stocks';
 		db.destroy();
 	}
 
@@ -70,7 +71,7 @@ exports = module.exports = class FetchStockList{
 			    level integer default 0, \
 			    status integer default 0\
 			)';
-			await db.query('stocks',sql);
+			await db.query(this.stocks,sql);
 			Logger.log('table summary created');
 
 			// let sql='INSERT INTO stock_list (code,name) VALUES(\'%s\',\'%s\')';
@@ -81,7 +82,7 @@ exports = module.exports = class FetchStockList{
 						let name=stock[code];
 						Logger.log(code+": "+name);
 						let sql='INSERT INTO summary (id,name,exchange) VALUES(\''+code+'\',\''+name+'\',\''+ex+'\')';
-						db.query('stocks',sql);
+						db.query(this.stocks,sql);
 						break;
 					}
 				}

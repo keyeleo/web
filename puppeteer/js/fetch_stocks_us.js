@@ -1,18 +1,18 @@
 const Logger=require('./logger');
 const db=require('./dbconnector');
 
-exports = module.exports = class FetchHKStocks{
+exports = module.exports = class FetchUSStocks{
 
 	constructor(){
-		this.page='quote.eastmoney.com/hk/HStock_list.html';
+		this.page='vip.stock.finance.sina.com.cn/usstock/ustotal.php';
 		this.url='http://'+this.page;
-		this.stocks='stocks_hk';
+		this.stocks='stocks_us';
 		db.destroy();
 	}
 
 	fetch(bodyHandle){
 		//all ul
-		let ulHandle=bodyHandle.querySelector('body > div:nth-child(10) > div > ul');
+		let ulHandle=bodyHandle.querySelector('#cp_list');
 		if(!ulHandle)
 			return {'error':'<ul> not found when fetch '+this.stocks};
 		let aHandles=ulHandle.querySelectorAll('a');
@@ -21,11 +21,11 @@ exports = module.exports = class FetchHKStocks{
 		let data={};
 		for(let aHandle of aHandles){
 			let str=aHandle.textContent;
-			if(str.indexOf(')')==6){
-				const code=str.substr(str.indexOf('(')+1,5);
-				const name=str.substr(str.indexOf(')')+1);
-				const n=parseInt(code);
-				if(n<10000){
+			if(str.indexOf(')')>0){
+				const i0=str.indexOf('(');
+				const code=str.substring(i0+1,str.indexOf(')'));
+				const name=str.substring(0,i0);
+				if(code.length>0 && name.length>0){
 					data[code]=name;
 				}
 			}
@@ -39,7 +39,7 @@ exports = module.exports = class FetchHKStocks{
 			return data.error;
 		else{
 			/*
-			exchange: sz/sh
+			exchange: us
 			grade: A-D
 			level: 0-9, market value
 			status: 0(initialized), 1(fetched), 2(delisted), 3(normal), 4(passed), 5(selected)
@@ -61,7 +61,7 @@ exports = module.exports = class FetchHKStocks{
 			// let sql='INSERT INTO stock_list (code,name) VALUES(\'%s\',\'%s\')';
 			for(let code in data){
 				let name=data[code];
-				let sql='INSERT INTO summary (id,name,exchange) VALUES(\''+code+'\',\''+name+'\',\'hk\')';
+				let sql='INSERT INTO summary (id,name,exchange) VALUES(\''+code+'\',\''+name+'\',\'us\')';
 				if(db.query(this.stocks,sql))
 					Logger.log('insert '+code+": "+name);
 			}

@@ -8,8 +8,10 @@ class PageFetcher{
     const packages=[
       './fetch_stocks_cn',
       './fetch_stocks_hk',
+      './fetch_stocks_us',
       './fetch_financial',
       './fetch_financial_hk',
+      './fetch_financial_us',
       './fetch_p2p'
     ];
 
