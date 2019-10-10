@@ -46,6 +46,9 @@ class Fetcher{
 	}
 
 	parse(Data){
+		let code=Data.code;
+		Data=Data.data;
+
 		function initData(period){
 			let data={};
 			data.period=period;
@@ -83,63 +86,60 @@ class Fetcher{
 
 		let indicators={
 			// 'sc': '',
-			'ta': '资产总额(元)',
-			'tl': '负债总额(元)',
+			'ta': '资产合计',
+			'tl': '负债合计',
 			'ca': '流动资产合计',
 			'cl': '流动负债合计',
 			'ivt': '存货',
-			'tr': '应收账款及票据',
+			'tr': '应收账款',
 			// 'dr': '',
-			'adv': '预付款项、按金及其他应收款项(流动)',
-			'gr': '营业收入(计算)',
-			'cor': '销售成本',
+			'adv': '预付款项',
+			'gr': '营业收入',
+			'cor': '营业成本',
 			'np': '净利润',
-			'npas': '本公司拥有人应占净利润',
+			'npas': '归属于母公司股东的净利润',
 			// 'npc': '',
-			'gm': '毛利率(%)',
-			'pm': '净利率(%)',
-			'ocf': '经营活动产生的现金流量净额',
-			'icf': '投资活动产生的现金流量净额',
-			'fcf': '融资活动产生的现金流量净额',
-			'roe': '平均净资产收益率(%)',
-			'roa': '总资产净利率(%)',
+			// 'gm': '',
+			// 'pm': '',
+			'ocf': '经营活动现金流量净额',
+			'icf': '投资活动现金流量净额',
+			'fcf': '筹资活动现金流量净额',
+			// 'roe': '',
+			// 'roa': '',
 			'cr': '流动比率',
-			// 'atr': '',
+			'atr': '速动比率',
 			// 'ocfr': '',
-			// 'er': '',
-			// 'ato': '',
-			// 'ito': '',
-			// 'rto': '',
-			'eps': '基本每股收益(元)',
-			'eas': '归属于母公司股东权益',
+			'er': '产权比率',
+			'ato': '总资产周转率',
+			'ito': '存货周转率',
+			'rto': '应收账款周转率',
+			'eps': '基本每股收益',
+			'eas': '归属于母公司股东权益合计',
+			'gp': '营业毛利润',
 		};
-
-		function parseTable(tb,report){
-			for(let i=1;i<tb.title.length;++i){
-				let title=tb.title[i][0];
-				let unit=tb.title[i][1];
-				let data=tb.report[i];
-				if(unit.substring(0,2)=='百万'){
-					// for(let j=0;j<data.length;++j){
-					// 	data[j]*=100;
-					// }
-				}
-
-				report[title]=data;
-				Logger.log(title);
-			}
-		}
 
 		function fill(rowsMap,field,name){
 			// let hta=handles[idx];
 			let hta=rowsMap[name];
 			if(!hta){
-				if(field=='cor')
-					hta=rowsMap['营业支出(计算)'];
-				else if(field=='gr')
-					hta=rowsMap['营业总收入(元)'];
+				if(field=='gr')
+					hta=rowsMap['总收入'];
 				else if(field=='ca')
-					hta=rowsMap['现金及现金等价物'];
+					hta=rowsMap['现金和中央银行存款'];
+				else if(field=='tr')
+					hta=rowsMap['应收款项'];
+				else if(field=='ocf')
+					hta=rowsMap['经营活动产生的现金流量净额'];
+				else if(field=='icf')
+					hta=rowsMap['投资活动产生的现金流量净额'];
+				else if(field=='fcf')
+					hta=rowsMap['筹资活动产生的现金流量净额'];
+				else if(field=='gp')
+					hta=rowsMap['持续经营业务的税前利润'];
+			}
+			if(!hta){
+				if(field=='gp')
+					hta=rowsMap['税前利润'];
 			}
 			if(!hta){
 				for(let key in rowsMap){
@@ -149,12 +149,14 @@ class Fetcher{
 					}
 				}
 				if(!hta){
-					if(field=='adv' || field=='ivt' || field=='cor' || field=='tr' || field=='icf' || field=='fcf')
+					if(field=='adv' || field=='ivt' || field=='cor' || field=='tr' || field=='atr' || field=='cr' || field=='er' ||
+							field=='icf' || field=='fcf' || field=='ato' || field=='ito' || field=='rto' ||
+							field=='gr')
 						return true;
 					if(field=='ca' || field=='cl' || field=='tr'){
 						for(let key in rowsMap){
 							//bank or ensurance
-							if(key=='现金、存放同业和其他金融机构款项' || key=='保险负债总额'){
+							if(key=='存放同业银行款项' || key=='预收保费'){
 								return true;
 							}
 						}
@@ -163,14 +165,18 @@ class Fetcher{
 				}
 			}
 
-			for(let svalue of hta){
+			for(let i=0;i<hta.length;++i){
+				if(i>=data.length)
+					break;
+				let svalue=hta[i];
 				let value=parseFloat(svalue);
-				if(field!='roe' && field!='roa' && field!='pm' && field!='gm')
-					value/=1000000;	//=>1m
+				if(field!='roe' && field!='roa' && field!='pm' && field!='gm' &&
+						field!='ato' && field!='ito' && field!='rto' && field!='er' && field!='atr' && field!='cr')
+					value/=100;		//=>1m
 				if(field=='ta' || field=='tl' || field=='ca' || field=='cl')
 					value/=100;		//=>100m
 
-				let d=data[i-1];
+				let d=data[i];
 				if(value)
 					d[field]=value;
 			}	
@@ -181,84 +187,132 @@ class Fetcher{
 		let benefit=JSON.parse(Data.benefit);
 		let debt=JSON.parse(Data.debt);
 		let cash=JSON.parse(Data.cash);
-		let report={};
-		parseTable(keyindex,report);
-		// parseTable(benefit,report);
-		// parseTable(debt,report);
-		// parseTable(cash,report);
+		if(!keyindex || !benefit || !debt || !cash){
+			return {'code':code, 'error': code+': json parse'};
+		}
 
+		let report={};	//{'总资产': [21,20,18,...], '总负债': [14,13,10]}
+		var data=[];
+
+		//parse title
+		let period=[];
+		let titles=keyindex.report[0];
+		for(let str of titles){
+			//2019-06-30
+			let year=str.substring(0,4);
+			let quater=str.substring(5,7)/3;
+			let period=year+'Q'+quater;
+			if(period.length!=6)
+				continue;
+			let d=initData(period);
+
+			// temp used
+			d.eps=0;
+			d.eas=0;	//Equity Attributable to ShareHolders
+			d.gp=0;
+
+			data.push(d);
+		}
+
+		//parse content
+		for(let tb of [keyindex, benefit, debt, cash]){
+			for(let i=1;i<tb.title.length;++i){
+				let title=tb.title[i][0];
+				let unit=tb.title[i][1];	//default k
+				let data=tb.report[i];
+				if(unit.substring(0,2)=='百万'){
+					// for(let j=0;j<data.length;++j){
+					// 	data[j]*=100;
+					// }
+				}
+				title=title.replace(/\s+/g,"");	//remove blanks
+
+				report[title]=data;
+			}
+		}
+
+		//fill data
 		for(let ik in indicators){
 			let indicator=indicators[ik];
 			if(!fill(report, ik, indicator))
 				return {'code':code, 'error': code+': '+indicator+' error'};
 		}
 
-		var data={};
 		return data;
+	}
+
+	delist(code){
+		let status=2;	//delisted
+		let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
+		db.query(this.stocks,sql);
+		Logger.log('Delisted: '+code);
 	}
 
 	async process(Data,url){
 		if(Data){
+			if(Data.error){
+				//'http://'+this.page+'_code_/finance/';
+				let code=url.substring(url.indexOf(this.page)+this.page.length,url.indexOf('/finance'));
+				this.delist(code);
+				return 'Error';
+			}
+
 			let code=Data.code;
-			let data=this.parse(Data.data);
-			if(code && data){
-				// let res=await this.createTable(code);
-				// if(res){
-				// 	for(let i=0;i<data.length;++i){
-				// 		let d=data[i];
-				// 		if(d.eps!=0)
-				// 			d.sc=Math.ceil(d.npas/d.eps/10000);
-				// 		if(d.cl!=0)
-				// 			d.cr=d.ca/d.cl;
-				// 		if(d.eas!=0){
-				// 			d.er=d.tl*100/d.eas;
-				// 			if(d.er>999999)d.er=999999;
-				// 			if(d.er<-999999)d.er=-999999;
-				// 		}
-				// 		if(d.cl!=0){
-				// 			d.ocfr=d.ocf/d.cl;
-				// 			if(d.ocfr>99999)d.ocfr=99999;
-				// 			if(d.ocfr<-99999)d.ocfr=-99999;
-				// 		}
-				// 		if(i==data.length-1){
-				// 			if(d.ta!=0){
-				// 				d.ato=d.gr/d.ta;
-				// 			}
-				// 			if(d.ivt!=0)
-				// 				d.ito=d.cor/d.ivt;
-				// 		}else{
-				// 			let avgta=(d.ta+data[i+1].ta)/2;
-				// 			if(avgta!=0){
-				// 				d.ato=d.gr/avgta;
-				// 			}
-				// 			let avgivt=(d.ivt+data[i+1].ivt)/2;
-				// 			if(avgivt!=0)
-				// 				d.ito=d.cor/avgivt;
-				// 		}
-				// 		if(d.ato>99999)d.ato=99999;
-				// 		if(d.ato<-99999)d.ato=-99999;
-				// 		d.cor=-d.cor;
-				// 	}
+			let data=this.parse(Data);
+			if(code && data && !data.error){
+				let res=await this.createTable(code);
+				if(res){
+					for(let i=0;i<data.length;++i){
+						let d=data[i];
+						if(d.eps!=0)
+							d.sc=Math.ceil(d.npas/d.eps);
+						if(d.cl!=0){
+							d.ocfr=d.ocf/d.cl;
+							if(d.ocfr>99999)d.ocfr=99999;
+							if(d.ocfr<-99999)d.ocfr=-99999;
+						}
+						if(d.gr!=0){
+							d.pm=d.np/d.gr*100;
+							if(d.pm>99999)d.pm=99999;
+							if(d.pm<-99999)d.pm=-99999;
+						}
+						if(i==data.length-1){
+							if(d.ta!=0){
+								d.roa=d.gp/d.ta;
+							}
+							if(d.ta!=d.tl){
+								d.roe=d.np/(d.ta-d.tl);
+							}
+						}else{
+							let avgta=(d.ta+data[i+1].ta)/2;
+							if(avgta!=0){
+								d.roa=d.gp/avgta;
+							}
+							let avge=(d.ta+data[i+1].ta-d.tl-data[i+1].tl)/2;
+							if(avge!=0){
+								d.roe=d.np/avge;
+							}
+						}
+					}
 
-				// 	for(let d of data){
-				// 		await this.insertData(code,d);
-				// 	}
+					for(let d of data){
+						await this.insertData(code,d);
+					}
 
-				// 	let status=1;	//fetched
-				// 	let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
-				// 	db.query(this.stocks,sql);
-				// }
-			}else{
-				if(code && code.length>0){
-					let status=2;	//delisted
+					let status=1;	//fetched
 					let sql='UPDATE summary SET status='+status+' WHERE id=\''+code+'\'';
 					db.query(this.stocks,sql);
-					Logger.log('Delisted: '+code);
-				}else
-					Logger.log('Error: '+Data.error);
+				}
+			}else{
+				if(data.error){
+					if(data.error.indexOf('资产合计')>=0){
+						this.delist(code);
+					}else
+						Logger.log('Error: '+data.error);
+				}
 			}
 		}
-		return Data;
+		return 'OK';
 	}
 
 	async insertData(code,data){
@@ -372,7 +426,10 @@ class Fetcher{
 	}
 
 	code2table(code){
-		return 'f10_'+code;
+		//us stocks might have .
+		let tb='f10_'+code;
+		tb=tb.replace(/\./g,'_');
+		return tb;
 	}
 
 	sleep(ms){
@@ -406,10 +463,6 @@ exports = module.exports = class FetchFinancialTrigger{
 		const bundle=1+res.rows.length/parallel;
 		for(let i=0,ii=res.rows.length;i<ii;++i){
 			ids.push(res.rows[i].id);
-
-			stocks.push(ids);
-			break;
-
 			if(ids.length>=bundle || i==ii-1){
 				stocks.push(ids);
 				ids=[];
