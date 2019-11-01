@@ -146,7 +146,7 @@ exports = module.exports = class FetchFinancial{
 			let data=Data.data;
 			if(code && data){
 				let res=await this.createTable(code);
-				if(res){
+				if(res || F10Utils.Code2.update()){
 					for(let i=0;i<data.length;++i){
 						let d=data[i];
 						if(d.eps!=0)

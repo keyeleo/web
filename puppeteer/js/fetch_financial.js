@@ -2,6 +2,21 @@ const Logger=require('./logger');
 const db=require('./dbconnector');
 const PageFetcher=require('./pagefetcher');
 
+class _Utils{
+	static table(code){
+		return 'f10_'+code;
+	}
+
+	static db(code){
+		return 'f10';
+		// return 'f10_'+((code/1000<600)?'sz':'sh');
+	}
+
+	static update(){
+		return false;
+	}
+}
+
 exports = module.exports = class FetchFinancialTrigger{
 
 	constructor(pageFetcher){
@@ -36,9 +51,10 @@ exports = module.exports = class FetchFinancialTrigger{
 		// 深A: sz000xxx, sz002xxx
 		// 创业: sz300xxx
 		// This filters with status, so just use it normally when new stock published
-		
-		let sql='SELECT id FROM summary WHERE (status IS NULL OR status<1) AND \
-(id<\'003000\' OR id>\'300000\' AND id<\'300100\' OR id>\'600000\' AND id<\'604000\') ORDER BY id';
+
+		let status=_Utils.update()?'status>=3':'status IS NULL OR status<1';
+		let sql='SELECT id FROM summary WHERE ('+status+') AND \
+(id<\'003000\' OR id>\'300000\' AND id<\'310000\' OR id>\'600000\' AND id<\'700000\') ORDER BY id';
 		let res=await db.query('stocks',sql);
 
 		let stocks=[];
@@ -71,13 +87,4 @@ exports = module.exports = class FetchFinancialTrigger{
 	}
 }
 
-exports.Code2=class _Utils{
-	static table(code){
-		return 'f10_'+code;
-	}
-
-	static db(code){
-		return 'f10';
-		// return 'f10_'+((code/1000<600)?'sz':'sh');
-	}
-}
+exports.Code2=_Utils;
